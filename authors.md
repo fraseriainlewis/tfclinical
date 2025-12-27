@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Fraser Lewis**. Author, maintainer.
+- **Frazer Lewis**. Author, maintainer.
 
 ## Citation
 
@@ -12,7 +12,7 @@ aaa placeholder*. R package version 0.1.0,
 
     @Manual{,
       title = {tfclinical: What the Package Does (Title Case) - just aaa placeholder},
-      author = {Fraser Lewis},
+      author = {Frazer Lewis},
       year = {2025},
       note = {R package version 0.1.0},
       url = {https://fraseriainlewis.github.io/tfclinical/},
