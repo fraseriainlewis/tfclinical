@@ -2,7 +2,7 @@
 title: "my-vignette-test"
 output: rmarkdown::html_vignette
 resource_files:
-  - images/basicplot-5.png  # This forces the entire folder to be copied
+  - images/  # This forces the entire folder to be copied
 vignette: >
   %\VignetteIndexEntry{my-vignette-test}
   %\VignetteEngine{knitr::rmarkdown}
@@ -29,7 +29,7 @@ ddd
 ### dddd
 
 ```{r rsetup, include=TRUE,echo=FALSE}
-#plot(1:10)
+plot(1:10)
 ```
 
 ```{r, echo=FALSE}
