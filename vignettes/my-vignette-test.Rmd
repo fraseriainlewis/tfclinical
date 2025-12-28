@@ -258,7 +258,8 @@ print(f" means for mu0, sigma0, mu1, sigma1\n")
 
 ```
 
-```{python outputs1, dev = "png"} #knit default is ragg_png but matplotlib does not have this
+```{python outputs1, dev = "png"} 
+#knit default is ragg_png but matplotlib does not have this
 plt.figure(figsize=(10, 5))
 plt.plot(tf.squeeze(traceout['logL'].numpy()))
 plt.title("log likelihood")
@@ -277,4 +278,7 @@ plt.show()
 
 ```
 
+```{r basicplot}
+plot(unlist(py$samplesflat[1]),type="l",col="red")
+```
 
