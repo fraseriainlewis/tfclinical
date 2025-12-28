@@ -7,3 +7,8 @@ this is the index.md file
 - [`hello()`](https://fraseriainlewis.github.io/tfclinical/reference/hello.md)
   : Hello, World!
 
+# Articles
+
+### All vignettes
+
+- [my-vignette-test](https://fraseriainlewis.github.io/tfclinical/articles/my-vignette-test.md):

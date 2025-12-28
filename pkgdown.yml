@@ -1,8 +1,9 @@
 pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
-articles: {}
-last_built: 2025-12-28T01:30Z
+articles:
+  my-vignette-test: my-vignette-test.html
+last_built: 2025-12-28T02:44Z
 urls:
   reference: https://fraseriainlewis.github.io/tfclinical/reference
   article: https://fraseriainlewis.github.io/tfclinical/articles
