@@ -22,14 +22,14 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r rsetup, include=FALSE}
+```{r rsetup, include=TRUE}
 #library(tfclinical)
 library(tfprobability)
 library(reticulate)
 #reticulate::py_install("bash") # just a test
 ```
 ## Dataset 
-```{r datasets, include=FALSE}
+```{r datasets, include=TRUE}
 ### Prepare model inputs
 set.seed(9999)
 # Set up data
