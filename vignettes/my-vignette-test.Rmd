@@ -11,10 +11,10 @@ vignette: >
 ```{r setup, include = FALSE}
 # Check if running on GitHub Actions
 # This is important as otherwise Github will attempt to build this and it's missing the python libraries and will fail
-on_github <- Sys.getenv("GITHUB_ACTIONS") == "true"
+#on_github <- Sys.getenv("GITHUB_ACTIONS") == "true"
 
 # If on GitHub, set eval = FALSE for all subsequent chunks
-knitr::opts_chunk$set(eval = !on_github)
+#knitr::opts_chunk$set(eval = !on_github)
 ```
 
 ```{r, include = FALSE}
@@ -30,7 +30,7 @@ ddd
 
 ```{r rsetup, include=TRUE,echo=FALSE,results='hide'}
 #png("images/plot1.png")
-plot(1:100)
+#plot(1:100)
 #dev.off()
 ```
 
