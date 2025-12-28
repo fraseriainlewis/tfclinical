@@ -34,11 +34,7 @@ plot(1:10)
 
 ```{r, echo=FALSE}
 # This ensures knitr tracks the image as a dependency
-#knitr::include_graphics("images/basicplot-5.png")
-```
-
-```{r rsetup2, include=TRUE,echo=FALSE}
-plot(density(rnorm(1e5)))
+knitr::include_graphics("images/basicplot-5.png")
 ```
 
 
