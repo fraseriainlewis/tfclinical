@@ -2,7 +2,7 @@
 title: "my-vignette-test"
 output: rmarkdown::html_vignette
 resource_files:
-  - images/  # This forces the entire folder to be copied
+  - images/basicplot-5.png  # This forces the entire folder to be copied
 vignette: >
   %\VignetteIndexEntry{my-vignette-test}
   %\VignetteEngine{knitr::rmarkdown}
