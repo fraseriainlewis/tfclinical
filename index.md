@@ -1,3 +1,3 @@
-# MyPackage ![](reference/figures/logo.png)
+# MyPackage
 
 this is the index.md file
