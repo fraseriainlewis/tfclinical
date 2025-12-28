@@ -88,7 +88,8 @@ z_vec=tf.convert_to_tensor(thedata.iloc[:,2], dtype = tf.float32)
 print(f"y={z_vec}")
 
 ```
-```{python definemodel}
+
+```{python definemodel,include=FALSE}
 def make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):
     beta=tf.stack([mu0 + sigma0 * log_odd_control_and_ratio[0],
                    mu1 + sigma1 * log_odd_control_and_ratio[1]])
