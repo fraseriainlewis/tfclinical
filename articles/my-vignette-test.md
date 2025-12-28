@@ -99,3 +99,164 @@ def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
   return model.log_prob((
       mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))
 ```
+
+### Define the MCMC sampler for Tensorflow
+
+Use a No-u-turn sampler with dual step size adaptation, no-u-turn is
+HMC-based and so needs bijectors defined to project into unconstrained
+space.
+
+``` python
+unconstraining_bijectors = [
+    tfb.Identity(),
+    tfb.Exp(),
+    tfb.Identity(),
+    tfb.Exp(),
+    tfb.Identity()
+]
+```
+
+#### Step-size Adaptation
+
+To allow step size to separately adapt for each parameter and in each
+chain, then the step-size vector must be passed in a specific structure,
+and the same structure as the initial values. The general structure is
+the outer dimension should be for the chain, and the rest of the
+structure needs to map into the state variable structure.
+
+``` python
+# this is to allow step size to be separately adapted for each parameter in the model
+steps=[tf.constant([0.5]),
+        tf.constant([0.05]),
+                   tf.constant([0.5]),
+        tf.constant([0.05]),
+        tf.constant([[0.5,0.5]]) # NOTE - vector
+        ]
+
+# now we replicate this into a structure to account for the fact that we want to run multiple chains
+# as this will force TF to use parallel computation wherever possible
+n_chains=2 ## SETS NUMBER OF CHAINS
+steps_chains = [tf.expand_dims(tf.repeat(steps[0],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[1],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[2],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[3],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.tile(steps[4],[n_chains,1]),axis=1) # starts with shape (1,2) i.e. [[a, b]]
+                 ]
+```
+
+Now define the sampler
+
+``` python
+useNuts=True
+useHMC=False
+
+if useNuts:
+  num_results=1000
+  num_burnin_steps=100
+  mysampler=tfp.mcmc.NoUTurnSampler(
+                                     target_log_prob_fn=log_prob_fn,
+                                     max_tree_depth=15,
+                                     max_energy_diff=1000.0,
+                                     step_size=steps_chains
+                                     )
+if useHMC:
+  num_results=20000
+  num_burnin_steps=10000
+  mysampler=tfp.mcmc.HamiltonianMonteCarlo(
+                                     target_log_prob_fn=log_prob_fn,
+                                     num_leapfrog_steps=75,
+                                     step_size=steps_chains
+                                     )                                     
+
+sampler = tfp.mcmc.TransformedTransitionKernel( # inside this the starting conditions must be on original scale
+                                                # i.e. precisions must be >0
+    mysampler,
+    bijector=unconstraining_bijectors
+    )
+
+adaptive_sampler = tfp.mcmc.DualAveragingStepSizeAdaptation(
+    inner_kernel=sampler,
+    num_adaptation_steps=int(0.8 * num_burnin_steps),
+    reduce_fn=tfp.math.reduce_logmeanexp, #default - this determines how to change the step adaptation across chains
+    #reduce_fn=tfp.math.reduce_log_harmonic_mean_exp, # might be better if difficult chains
+    target_accept_prob=tf.cast(0.95, tf.float32))
+```
+
+Now setup the initial conditions. Similar to step-size, must have
+specific structure.
+
+``` python
+istate=[tf.constant([0.0]),
+        tf.constant([0.5]),
+                   tf.constant([0.0]),
+        tf.constant([0.5]),
+        tf.constant([[1.,-1.]])]
+
+current_state = [tf.expand_dims(tf.repeat(istate[0],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[1],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[2],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[3],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.tile(istate[4],[n_chains,1]),axis=1) # starts with shape (1,2) i.e. [[a, b]]
+                 ]
+```
+
+Now do the actual sampling. First setup a trace function which records
+sample size changes. This function could also compute loglikelihood as
+all that needs passed is the state vector
+
+``` python
+def trace_fn(state, pkr):
+    return {
+        'sample': state, # this is also pkr['all'][0].transformed_state[0]
+        'step_size': pkr.new_step_size,  # <--- THIS extracts the adapted step size
+        'all': pkr, #state is also pkr['all'][0].transformed_state[0]
+        #pkr is a named tuple with ._fields = ('transformed_state', 'inner_results')
+        # 'transformed_state is the state
+        # 'inner_results' is diagnostics
+        # ('target_log_prob', 'grads_target_log_prob', 'step_size', 'log_accept_ratio', 'leapfrogs_taken',                     'is_accepted', 'reach_max_depth', 'has_divergence', 'energy', 'seed')
+        'has_divergence':pkr[0].inner_results.has_divergence,
+        'logL': log_prob_fn(state[0], state[1],state[2],state[3],state[4])
+    }
+```
+
+``` python
+# Speed up sampling by tracing with `tf.function`.
+@tf.function(autograph=False, jit_compile=True,reduce_retracing=True)
+def do_sampling():
+  return tfp.mcmc.sample_chain(
+      kernel=adaptive_sampler,
+      current_state=current_state,
+      num_results=num_results,
+      num_burnin_steps=num_burnin_steps,
+      seed= tf.constant([9999, 9999], dtype=tf.int32),
+      trace_fn=trace_fn)
+
+
+t0 = time.time()
+#samples, kernel_results = do_sampling()
+samples, traceout = do_sampling()
+#res = do_sampling()
+#[mu0, sigma0, mu1, sigma1,log_odds_control_and_ratio], results = do_sampling() 
+t1 = time.time()
+print("Inference ran in {:.2f}s.".format(t1-t0))
+
+## there is a trailing dimension of 1 so need to squeeze to get each col is chain, and each row is parameter sample
+samplesflat = list(map(lambda x: tf.squeeze(x).numpy(), samples))
+print(f" means for mu0, sigma0, mu1, sigma1\n")
+[np.mean(row) for row in samplesflat[0:4]]
+```
+
+\`\`\`{python outputs1, dev = “png”} \#knit default is ragg_png but
+matplotlib does not have this plt.figure(figsize=(10, 5))
+plt.plot(tf.squeeze(traceout\[‘logL’\].numpy())) plt.title(“log
+likelihood”) plt.show()
+
+
+    ``` python
+    fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
+    fig.set_size_inches(10, 5)
+    axes[0][0].plot(samplesflat[0]) # mu_b
+    axes[0][1].plot(samplesflat[1]) # tau_b
+    axes[1][0].plot(samplesflat[2]) # mu
+    axes[1][1].plot(samplesflat[3]) # tau
+    plt.show()

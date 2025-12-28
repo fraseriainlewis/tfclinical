@@ -158,6 +158,147 @@ it is accessible as a pandas data.frame inside python chunks.</p>
 <span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="co">"""Unnormalized target density as a function of states."""</span></span>
 <span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="cf">return</span> model.log_prob((</span>
 <span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))</span></code></pre></div>
+<div class="section level3">
+<h3 id="define-the-mcmc-sampler-for-tensorflow">Define the MCMC sampler for Tensorflow<a class="anchor" aria-label="anchor" href="#define-the-mcmc-sampler-for-tensorflow"></a>
+</h3>
+<p>Use a No-u-turn sampler with dual step size adaptation, no-u-turn is
+HMC-based and so needs bijectors defined to project into unconstrained
+space.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>unconstraining_bijectors <span class="op">=</span> [</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    tfb.Identity(),</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    tfb.Exp(),</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    tfb.Identity(),</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    tfb.Exp(),</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    tfb.Identity()</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>]</span></code></pre></div>
+<div class="section level4">
+<h4 id="step-size-adaptation">Step-size Adaptation<a class="anchor" aria-label="anchor" href="#step-size-adaptation"></a>
+</h4>
+<p>To allow step size to separately adapt for each parameter and in each
+chain, then the step-size vector must be passed in a specific structure,
+and the same structure as the initial values. The general structure is
+the outer dimension should be for the chain, and the rest of the
+structure needs to map into the state variable structure.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># this is to allow step size to be separately adapted for each parameter in the model</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>steps<span class="op">=</span>[tf.constant([<span class="fl">0.5</span>]),</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>        tf.constant([<span class="fl">0.05</span>]),</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                   tf.constant([<span class="fl">0.5</span>]),</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>        tf.constant([<span class="fl">0.05</span>]),</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>        tf.constant([[<span class="fl">0.5</span>,<span class="fl">0.5</span>]]) <span class="co"># </span><span class="al">NOTE</span><span class="co"> - vector</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>        ]</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># now we replicate this into a structure to account for the fact that we want to run multiple chains</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co"># as this will force TF to use parallel computation wherever possible</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>n_chains<span class="op">=</span><span class="dv">2</span> <span class="co">## SETS NUMBER OF CHAINS</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>steps_chains <span class="op">=</span> [tf.expand_dims(tf.repeat(steps[<span class="dv">0</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(steps[<span class="dv">1</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(steps[<span class="dv">2</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(steps[<span class="dv">3</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>                 tf.expand_dims(tf.tile(steps[<span class="dv">4</span>],[n_chains,<span class="dv">1</span>]),axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># starts with shape (1,2) i.e. [[a, b]]</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>                 ]</span></code></pre></div>
+<p>Now define the sampler</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>useNuts<span class="op">=</span><span class="va">True</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>useHMC<span class="op">=</span><span class="va">False</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="cf">if</span> useNuts:</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  num_results<span class="op">=</span><span class="dv">1000</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  num_burnin_steps<span class="op">=</span><span class="dv">100</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  mysampler<span class="op">=</span>tfp.mcmc.NoUTurnSampler(</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>                                     target_log_prob_fn<span class="op">=</span>log_prob_fn,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>                                     max_tree_depth<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                                     max_energy_diff<span class="op">=</span><span class="fl">1000.0</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>                                     step_size<span class="op">=</span>steps_chains</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>                                     )</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="cf">if</span> useHMC:</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  num_results<span class="op">=</span><span class="dv">20000</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  num_burnin_steps<span class="op">=</span><span class="dv">10000</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  mysampler<span class="op">=</span>tfp.mcmc.HamiltonianMonteCarlo(</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>                                     target_log_prob_fn<span class="op">=</span>log_prob_fn,</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>                                     num_leapfrog_steps<span class="op">=</span><span class="dv">75</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>                                     step_size<span class="op">=</span>steps_chains</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>                                     )                                     </span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>sampler <span class="op">=</span> tfp.mcmc.TransformedTransitionKernel( <span class="co"># inside this the starting conditions must be on original scale</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>                                                <span class="co"># i.e. precisions must be &gt;0</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>    mysampler,</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    bijector<span class="op">=</span>unconstraining_bijectors</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>    )</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>adaptive_sampler <span class="op">=</span> tfp.mcmc.DualAveragingStepSizeAdaptation(</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    inner_kernel<span class="op">=</span>sampler,</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>    num_adaptation_steps<span class="op">=</span><span class="bu">int</span>(<span class="fl">0.8</span> <span class="op">*</span> num_burnin_steps),</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>    reduce_fn<span class="op">=</span>tfp.math.reduce_logmeanexp, <span class="co">#default - this determines how to change the step adaptation across chains</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>    <span class="co">#reduce_fn=tfp.math.reduce_log_harmonic_mean_exp, # might be better if difficult chains</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>    target_accept_prob<span class="op">=</span>tf.cast(<span class="fl">0.95</span>, tf.float32))</span></code></pre></div>
+<p>Now setup the initial conditions. Similar to step-size, must have
+specific structure.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>istate<span class="op">=</span>[tf.constant([<span class="fl">0.0</span>]),</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>        tf.constant([<span class="fl">0.5</span>]),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                   tf.constant([<span class="fl">0.0</span>]),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>        tf.constant([<span class="fl">0.5</span>]),</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>        tf.constant([[<span class="fl">1.</span>,<span class="op">-</span><span class="fl">1.</span>]])]</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>current_state <span class="op">=</span> [tf.expand_dims(tf.repeat(istate[<span class="dv">0</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(istate[<span class="dv">1</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(istate[<span class="dv">2</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>                 tf.expand_dims(tf.repeat(istate[<span class="dv">3</span>],repeats<span class="op">=</span>n_chains,axis<span class="op">=-</span><span class="dv">1</span>),axis<span class="op">=-</span><span class="dv">1</span>), <span class="co"># starts with shape (1,)</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>                 tf.expand_dims(tf.tile(istate[<span class="dv">4</span>],[n_chains,<span class="dv">1</span>]),axis<span class="op">=</span><span class="dv">1</span>) <span class="co"># starts with shape (1,2) i.e. [[a, b]]</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>                 ]</span></code></pre></div>
+<p>Now do the actual sampling. First setup a trace function which
+records sample size changes. This function could also compute
+loglikelihood as all that needs passed is the state vector</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="kw">def</span> trace_fn(state, pkr):</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>        <span class="st">'sample'</span>: state, <span class="co"># this is also pkr['all'][0].transformed_state[0]</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>        <span class="st">'step_size'</span>: pkr.new_step_size,  <span class="co"># &lt;--- THIS extracts the adapted step size</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>        <span class="st">'all'</span>: pkr, <span class="co">#state is also pkr['all'][0].transformed_state[0]</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>        <span class="co">#pkr is a named tuple with ._fields = ('transformed_state', 'inner_results')</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>        <span class="co"># 'transformed_state is the state</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>        <span class="co"># 'inner_results' is diagnostics</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>        <span class="co"># ('target_log_prob', 'grads_target_log_prob', 'step_size', 'log_accept_ratio', 'leapfrogs_taken',                     'is_accepted', 'reach_max_depth', 'has_divergence', 'energy', 'seed')</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>        <span class="st">'has_divergence'</span>:pkr[<span class="dv">0</span>].inner_results.has_divergence,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>        <span class="st">'logL'</span>: log_prob_fn(state[<span class="dv">0</span>], state[<span class="dv">1</span>],state[<span class="dv">2</span>],state[<span class="dv">3</span>],state[<span class="dv">4</span>])</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    }</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Speed up sampling by tracing with `tf.function`.</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="at">@tf.function</span>(autograph<span class="op">=</span><span class="va">False</span>, jit_compile<span class="op">=</span><span class="va">True</span>,reduce_retracing<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="kw">def</span> do_sampling():</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="cf">return</span> tfp.mcmc.sample_chain(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>      kernel<span class="op">=</span>adaptive_sampler,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>      current_state<span class="op">=</span>current_state,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>      num_results<span class="op">=</span>num_results,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>      num_burnin_steps<span class="op">=</span>num_burnin_steps,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>      seed<span class="op">=</span> tf.constant([<span class="dv">9999</span>, <span class="dv">9999</span>], dtype<span class="op">=</span>tf.int32),</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>      trace_fn<span class="op">=</span>trace_fn)</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>t0 <span class="op">=</span> time.time()</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#samples, kernel_results = do_sampling()</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>samples, traceout <span class="op">=</span> do_sampling()</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#res = do_sampling()</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#[mu0, sigma0, mu1, sigma1,log_odds_control_and_ratio], results = do_sampling() </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>t1 <span class="op">=</span> time.time()</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Inference ran in </span><span class="sc">{:.2f}</span><span class="st">s."</span>.<span class="bu">format</span>(t1<span class="op">-</span>t0))</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">## there is a trailing dimension of 1 so need to squeeze to get each col is chain, and each row is parameter sample</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>samplesflat <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> x: tf.squeeze(x).numpy(), samples))</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" means for mu0, sigma0, mu1, sigma1</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>[np.mean(row) <span class="cf">for</span> row <span class="kw">in</span> samplesflat[<span class="dv">0</span>:<span class="dv">4</span>]]</span></code></pre></div>
+<p>```{python outputs1, dev = “png”} #knit default is ragg_png but
+matplotlib does not have this plt.figure(figsize=(10, 5))
+plt.plot(tf.squeeze(traceout[‘logL’].numpy())) plt.title(“log
+likelihood”) plt.show()</p>
+<pre><code>
+
+``` python
+fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
+fig.set_size_inches(10, 5)
+axes[0][0].plot(samplesflat[0]) # mu_b
+axes[0][1].plot(samplesflat[1]) # tau_b
+axes[1][0].plot(samplesflat[2]) # mu
+axes[1][1].plot(samplesflat[3]) # tau
+plt.show()</code></pre>
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
