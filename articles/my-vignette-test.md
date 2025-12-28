@@ -34,20 +34,7 @@ for(i in 1:K){ # for each basket repeat 0-control 1-trt inside this according to
 
 thedata<-data.frame(y,basketID=k_vec,Treatment=z_vec)
 knitr::kable(head(thedata)) 
-```
-
-|   y | basketID | Treatment |
-|----:|---------:|----------:|
-|   0 |        1 |         0 |
-|   0 |        1 |         0 |
-|   0 |        1 |         0 |
-|   1 |        1 |         0 |
-|   0 |        1 |         0 |
-|   0 |        1 |         0 |
-
-``` r
 py$thedata<-r_to_py(thedata) # to ensure correct form to python
-#> Downloading uv...Done!
 ```
 
 ## 2. Fit Bayesian Model in Tensorflow - One basket, control/test, binary endpoint
@@ -56,3 +43,59 @@ This runs python via reticulate with dependencies previously installed
 as part of the package. Note that the dataset created above has already
 been passed to python via reticulate r_to_py() function, and it is
 accessible as a pandas data.frame inside python chunks.
+
+``` python
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+import os
+#os.environ["KERAS_BACKEND"] = "jax"
+import keras
+#import bash
+import tensorflow as tf
+import tensorflow_probability as tfp
+from tensorflow_probability import distributions as tfd
+tfb = tfp.bijectors
+import warnings
+import time
+import sys
+print(sys.version)
+print(sys.executable)
+print(f"TensorFlow version:            {tf.__version__}")
+print(f"TensorFlow Probability version: {tfp.__version__}")
+
+print(f" rows={thedata.shape[0]} cols={thedata.shape[1]}")
+
+y_data=tf.convert_to_tensor(thedata.iloc[:,0], dtype = tf.float32)
+k_vec=tf.convert_to_tensor(thedata.iloc[:,1], dtype = tf.float32)
+z_vec=tf.convert_to_tensor(thedata.iloc[:,2], dtype = tf.float32)
+
+print(f"y={z_vec}")
+```
+
+``` python
+def make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):
+    beta=tf.stack([mu0 + sigma0 * log_odd_control_and_ratio[0],
+                   mu1 + sigma1 * log_odd_control_and_ratio[1]])
+    return(tfd.Independent(
+        tfd.Bernoulli(logits=beta[0]+beta[1]*z_vec),
+        reinterpreted_batch_ndims = 1
+    ))
+    
+# model is y[i] = Bernoulli(p[i]) where logit(p[i]) = intercept + treatment*z[i]
+model = tfd.JointDistributionSequentialAutoBatched([
+  tfd.Normal(loc=0., scale=2.5, name="mu0"),  # `mu_b` stan above
+  tfd.HalfNormal(scale=2.5, name="sigma0"),  # `tau_b` stan above
+  tfd.Normal(loc=0., scale=2.5, name="mu1"),  # `mu` stan above
+  tfd.HalfNormal(scale=2.5, name="sigma1"),  # `tau` stan above
+  tfd.Normal(loc=tf.zeros(2), scale=tf.ones(2), name="log_odd_control_and_ratio"), ## indep norms, vector
+  make_observed_dist
+])    
+    
+    
+def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
+  """Unnormalized target density as a function of states."""
+  return model.log_prob((
+      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))
+```
