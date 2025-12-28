@@ -22,14 +22,14 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r rsetup, include=TRUE}
+```{r rsetup, include=FALSE}
 #library(tfclinical)
 library(tfprobability)
 library(reticulate)
 #reticulate::py_install("bash") # just a test
 ```
 ## Dataset 
-```{r datasets, include=TRUE}
+```{r datasets, include=TRUE,eval=FALSE}
 ### Prepare model inputs
 set.seed(9999)
 # Set up data
@@ -56,9 +56,10 @@ for(i in 1:K){ # for each basket repeat 0-control 1-trt inside this according to
 thedata<-data.frame(y,basketID=k_vec,Treatment=z_vec)
 knitr::kable(head(thedata)) 
 py$thedata<-r_to_py(thedata) # to ensure correct form to python
+
 ```
 
-```{python pysetup,include=FALSE}
+```{python pysetup,include=TRUE,eval=FALSE}
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -89,7 +90,8 @@ print(f"y={z_vec}")
 
 ```
 
-```{python definemodel,include=FALSE}
+
+```{python definemodel,include=TRUE,eval=FALSE}
 def make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):
     beta=tf.stack([mu0 + sigma0 * log_odd_control_and_ratio[0],
                    mu1 + sigma1 * log_odd_control_and_ratio[1]])
