@@ -246,17 +246,24 @@ print(f" means for mu0, sigma0, mu1, sigma1\n")
 [np.mean(row) for row in samplesflat[0:4]]
 ```
 
-\`\`\`{python outputs1, dev = “png”} \#knit default is ragg_png but
-matplotlib does not have this plt.figure(figsize=(10, 5))
-plt.plot(tf.squeeze(traceout\[‘logL’\].numpy())) plt.title(“log
-likelihood”) plt.show()
+``` python
+#knit default is ragg_png but matplotlib does not have this
+plt.figure(figsize=(10, 5))
+plt.plot(tf.squeeze(traceout['logL'].numpy()))
+plt.title("log likelihood")
+plt.show()
+```
 
+``` python
+fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
+fig.set_size_inches(10, 5)
+axes[0][0].plot(samplesflat[0]) # mu_b
+axes[0][1].plot(samplesflat[1]) # tau_b
+axes[1][0].plot(samplesflat[2]) # mu
+axes[1][1].plot(samplesflat[3]) # tau
+plt.show()
+```
 
-    ``` python
-    fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
-    fig.set_size_inches(10, 5)
-    axes[0][0].plot(samplesflat[0]) # mu_b
-    axes[0][1].plot(samplesflat[1]) # tau_b
-    axes[1][0].plot(samplesflat[2]) # mu
-    axes[1][1].plot(samplesflat[3]) # tau
-    plt.show()
+``` r
+plot(unlist(py$samplesflat[1]),type="l",col="red")
+```

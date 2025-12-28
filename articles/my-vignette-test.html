@@ -283,20 +283,20 @@ loglikelihood as all that needs passed is the state vector</p>
 <span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>samplesflat <span class="op">=</span> <span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> x: tf.squeeze(x).numpy(), samples))</span>
 <span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" means for mu0, sigma0, mu1, sigma1</span><span class="ch">\n</span><span class="ss">"</span>)</span>
 <span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>[np.mean(row) <span class="cf">for</span> row <span class="kw">in</span> samplesflat[<span class="dv">0</span>:<span class="dv">4</span>]]</span></code></pre></div>
-<p>```{python outputs1, dev = “png”} #knit default is ragg_png but
-matplotlib does not have this plt.figure(figsize=(10, 5))
-plt.plot(tf.squeeze(traceout[‘logL’].numpy())) plt.title(“log
-likelihood”) plt.show()</p>
-<pre><code>
-
-``` python
-fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
-fig.set_size_inches(10, 5)
-axes[0][0].plot(samplesflat[0]) # mu_b
-axes[0][1].plot(samplesflat[1]) # tau_b
-axes[1][0].plot(samplesflat[2]) # mu
-axes[1][1].plot(samplesflat[3]) # tau
-plt.show()</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co">#knit default is ragg_png but matplotlib does not have this</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>plt.plot(tf.squeeze(traceout[<span class="st">'logL'</span>].numpy()))</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>plt.title(<span class="st">"log likelihood"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>)<span class="co">#, sharex='col', sharey='col')</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>fig.set_size_inches(<span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>axes[<span class="dv">0</span>][<span class="dv">0</span>].plot(samplesflat[<span class="dv">0</span>]) <span class="co"># mu_b</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>axes[<span class="dv">0</span>][<span class="dv">1</span>].plot(samplesflat[<span class="dv">1</span>]) <span class="co"># tau_b</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>axes[<span class="dv">1</span>][<span class="dv">0</span>].plot(samplesflat[<span class="dv">2</span>]) <span class="co"># mu</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>axes[<span class="dv">1</span>][<span class="dv">1</span>].plot(samplesflat[<span class="dv">3</span>]) <span class="co"># tau</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">samplesflat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>,type<span class="op">=</span><span class="st">"l"</span>,col<span class="op">=</span><span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
