@@ -29,12 +29,19 @@ ddd
 ### dddd
 
 ```{r rsetup, include=TRUE,echo=FALSE}
+png("images/plot1.png")
 plot(1:10)
+dev.off()
 ```
 
 ```{r, echo=FALSE}
 # This ensures knitr tracks the image as a dependency
 knitr::include_graphics("images/basicplot-5.png")
+```
+
+```{r, echo=FALSE}
+# This ensures knitr tracks the image as a dependency
+knitr::include_graphics("images/plot1.png")
 ```
 
 
