@@ -1,6 +1,8 @@
 ---
 title: "my-vignette-test"
 output: rmarkdown::html_vignette
+resource_files:
+  - images/  # This forces the entire folder to be copied
 vignette: >
   %\VignetteIndexEntry{my-vignette-test}
   %\VignetteEngine{knitr::rmarkdown}
@@ -281,4 +283,6 @@ plt.show()
 ```{r basicplot}
 plot(unlist(py$samplesflat[1]),type="l",col="red")
 ```
+
+
 
