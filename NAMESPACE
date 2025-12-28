@@ -1,2 +1,2 @@
 exportPattern("^[[:alpha:]]+")
-import(reticulate,tensorflow,tfprobability)
+import(reticulate,tensorflow,tfprobability,bayesplot,rstan)

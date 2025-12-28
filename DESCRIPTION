@@ -15,7 +15,9 @@ License: Apache License 2.0
 Depends:
     reticulate,
     tensorflow,
-    tfprobability
+    tfprobability,
+    rstan,
+    bayesplot
 Suggests:
     knitr,
     rmarkdown,
@@ -23,3 +25,4 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 URL: https://fraseriainlewis.github.io/tfclinical/
+VignetteBuilder: knitr
