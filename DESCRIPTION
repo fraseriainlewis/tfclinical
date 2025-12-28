@@ -9,7 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line).
+Description: More about what it does (maybe more than one line ideally).
     Continuation lines should be indented.
 License: Apache License 2.0
 Depends:
