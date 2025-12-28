@@ -256,7 +256,7 @@ print(f" means for mu0, sigma0, mu1, sigma1\n")
 
 ```
 ```{r plot}
-plot(c(py$samplesflat[[1]]),type="l")
+plot(c(py$samplesflat[[1]]),type="l",col="red")
 
 ```
 
