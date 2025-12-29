@@ -2,7 +2,7 @@
 title: "intro_to_tfp"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{intro_to_tfp_light}
+  %\VignetteIndexEntry{intro_to_tfp_heavy}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -29,7 +29,7 @@ library(reticulate)
 #reticulate::py_install("bash") # just a test
 ```
 ## Dataset 
-```{r datasets, include=TRUE,eval=FALSE}
+```{r datasets, include=TRUE,eval=TRUE}
 ### Prepare model inputs
 set.seed(9999)
 # Set up data
@@ -59,7 +59,7 @@ py$thedata<-r_to_py(thedata) # to ensure correct form to python
 
 ```
 
-```{python pysetup,include=TRUE,eval=FALSE}
+```{python pysetup,include=TRUE,eval=TRUE}
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -118,7 +118,9 @@ def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
  
 ```
 
-```{r rsetup2, include=TRUE,echo=FALSE}
-knitr::include_graphics("precomputed/plot11.png")
+```{r rsetup2, include=TRUE,echo=FALSE,results='hide'}
+png("precomputed/plot11.png")
+plot(density(rnorm(1e5)),main="plot")
+dev.off()
 ```
 

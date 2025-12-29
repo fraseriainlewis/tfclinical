@@ -1,6 +1,7 @@
 ---
 title: "my-vignette-test"
 output: rmarkdown::html_vignette
+
 vignette: >
   %\VignetteIndexEntry{my-vignette-test}
   %\VignetteEngine{knitr::rmarkdown}
@@ -27,19 +28,19 @@ ddd
 ### dddd
 
 ```{r rsetup, include=FALSE,echo=FALSE,results='hide'}
-png("images/plot11.png")
+#png("images/plot11.png")
 plot(1:100,col="red")
-dev.off()
+#dev.off()
 ```
 
 ```{r, echo=FALSE}
 # This ensures knitr tracks the image as a dependency
-knitr::include_graphics("images/plot11.png")
+#knitr::include_graphics("images/plot11.png")
 ```
 
 ```{r, echo=FALSE}
 # This ensures knitr tracks the image as a dependency
-knitr::include_graphics("images/plot11.png")
+#knitr::include_graphics("images/plot11.png")
 ```
 
 
