@@ -2,38 +2,49 @@
 
 ## Purpose
 
-This is a collection of vignettes showing how to use [Tensorflow
-Probability (TPF)](https://www.tensorflow.org/probability) in
-[RStudio](https://posit.co/downloads/) with most of the vignettes aimed
-at clinical research and drug development activities. The vignettes are
-multilingual - R and Python cells are mixed and matched to give best of
-both.
+This package is a collection of multilingual (R and Python) vignettes
+showing how to use [Tensorflow Probability
+(TPF)](https://www.tensorflow.org/probability) in
+[RStudio](https://posit.co/downloads/). The focus is modelling building
+and trial simulation for clinical research and drug development
+activities.
 
 ## Why Tensorflow Probability?
 
-- This is a collection of vignettes showing how to use Tensorflow
-  Probability (TPF) in RStudio with most of the vignettes aimed at
-  clinical research and drug development activities.
-- The vignettes range from demonstrating basic step-by-step mechanics of
-  running MCMC in RStudio using TFP, for example how to use adaptive
-  step sizes and multiple chains, through to complete examples of
-  simulating basket trials
+[Tensorflow Probability (TPF)](https://www.tensorflow.org/probability)
+is an alternative to [rstan](https://mc-stan.org/rstan/). Having two
+major open source numerical libraries offering similar functionality
+reduces risk. rstan is the more mature library for Bayesian modelling,
+while TFP being part of Google’s
+[Tensorflow](https://www.tensorflow.org/) framework offers computational
+flexibility (CPU/GPU/TPU).
 
-Why Tensorflow Probability?
+## Features
 
-Scope of current vignettes include:
-
-- Bayesian trial design and simulation
-  - Basket trial with binary end point
+The vignettes range from demonstrating basic step-by-step mechanics of
+running MCMC in RStudio using TFP, for example how to use **adaptive
+step sizes** and **multiple chains**, through to complete examples of
+simulating Bayesian basket trials using TFP and comparing the results
+against rstan. Most vignettes include a comparison with
+[rstan](https://mc-stan.org/rstan/).
 
 ## Installation
 
-Most vignettes are multilingual with cells of R code and Python code.
-Some simple setup is required. Due to the computationally intensive
-nature of the code and that some setup it needed
+Due to the computationally intensive nature of the code the vignettes
+show precomputed outputs, but the vignettes contain all the necessary
+code to repeat the computations. To run the computations the
+[tfclinical](https://github.com/fraseriainlewis/tfclinical.git) library
+needs installed and it has one main dependency
+[tfprobability](https://rstudio.github.io/tfprobability/index.html). The
+tfprobability library is not directly used but if this is installed
+correctly (see \[installation
+instructions\]((<https://rstudio.github.io/tfprobability/index.html>)
+then this provides the necessary Python libraries needed. There is one
+exception, in that we also use the pandas library and so this should be
+included in the tfprobabilty install script (see below).
 
 ``` r
-#
+# If Python is not already installed on a VM or Linux machine then the lines below are needed at bash
 #
 list(ls())
 ```
