@@ -5,12 +5,22 @@
   tfclinical
 </h1>
 
-This is a Documentation project
-giving A collection of vignettes showing how to ulitize Tensorflow in RStudio for drug development activities such as:
+## Purpose
+This is a collection of vignettes showing how to use Tensorflow Probability (TPF) in RStudio with most of the vignettes aimed at clinical research and drug development activities. The vignettes are multilingual - R and Python cells are mixed and matched to give best of both.
 
-- clinical trial simulation
-- Bayesian inference via MCMC and VI
-- predictive modelling and machine learning
+## Why Tensorflow Probability? 
+
+
+- This is a collection of vignettes showing how to use Tensorflow Probability (TPF) in RStudio with most of the vignettes aimed at clinical research and drug development activities.
+- The vignettes range from demonstrating basic step-by-step mechanics of running MCMC in RStudio using TFP, for example how to use adaptive step sizes and multiple chains, through to complete examples of simulating basket trials
+
+Why Tensorflow Probability? 
+
+Scope of current vignettes include:
+
+- Bayesian trial design and simulation
+    - Basket trial with binary end point
+    
 
 ## Installation
 Most vignettes are multilingual with cells of R code and Python code. Some simple setup is required. Due to the computationally intensive nature of the code and that some setup it needed
