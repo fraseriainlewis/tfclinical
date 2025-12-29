@@ -9,8 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: More about what it does (maybe more than one line ideally).
-    Continuation lines should be be indented.
+Description: A set of vignettes and case studies showing how to utilize Tensorflow Probability in RStudio for clinical research and drug development activities. The vignettes use a mixture of R and Python and include like for like comparisons with rstan. 
 License: Apache License 2.0
 Depends:
     reticulate,
