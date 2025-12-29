@@ -6,7 +6,7 @@
 </h1>
 
 ## Purpose
-This is a collection of vignettes showing how to use Tensorflow Probability (TPF) in RStudio with most of the vignettes aimed at clinical research and drug development activities. The vignettes are multilingual - R and Python cells are mixed and matched to give best of both.
+This is a collection of vignettes showing how to use [Tensorflow Probability (TPF)](https://www.tensorflow.org/probability) in [RStudio](https://posit.co/downloads/) with most of the vignettes aimed at clinical research and drug development activities. The vignettes are multilingual - R and Python cells are mixed and matched to give best of both.
 
 ## Why Tensorflow Probability? 
 
