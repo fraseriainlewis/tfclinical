@@ -118,7 +118,7 @@ def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
  
 ```
 
-```{r rsetup2, include=TRUE,echo=FALSE}
+```{r rsetup2, include=TRUE,echo=FALSE,out.width="75%", fig.align="center"}
 knitr::include_graphics("precomputed/plot11.png")
 ```
 
