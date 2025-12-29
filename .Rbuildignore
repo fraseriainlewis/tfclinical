@@ -4,3 +4,5 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^index\.md$
+^vignettes/*\.Rmd\.orig$
