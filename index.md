@@ -11,7 +11,7 @@ activities.
 
 ## Why Tensorflow Probability?
 
-[Tensorflow Probability (TPF)](https://www.tensorflow.org/probability)
+[Tensorflow Probability](https://www.tensorflow.org/probability) (TFP)
 is an alternative to [rstan](https://mc-stan.org/rstan/). Having two
 major open source numerical libraries offering similar functionality
 reduces risk. rstan is the more mature library for Bayesian modelling,
@@ -36,12 +36,13 @@ code to repeat the computations. To run the computations the
 [tfclinical](https://github.com/fraseriainlewis/tfclinical.git) library
 needs installed and it has one main dependency
 [tfprobability](https://rstudio.github.io/tfprobability/index.html). The
-tfprobability library is not directly used but if this is installed
-correctly (see \[installation
-instructions\]((<https://rstudio.github.io/tfprobability/index.html>)
-then this provides the necessary Python libraries needed. There is one
-exception, in that we also use the pandas library and so this should be
-included in the tfprobabilty install script (see below).
+tfprobability library is not directly used but installing this (see
+[installation
+instructions](https://rstudio.github.io/tfprobability/index.html)
+ensures the necessary Python libraries are available. There is one
+exception, in that we also use the Python pandas library and so this
+should be included in the tfprobabilty install script (see below) in the
+\`\`extras’’ option.
 
 ``` r
 # If Python is not already installed on a VM or Linux machine then the lines below are needed at bash
