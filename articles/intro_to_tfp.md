@@ -88,4 +88,4 @@ def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
  
 ```
 
-![](intro_to_tfp_files/figure-html/rsetup2-1.png)
+![](precomputed/plot11.png)
