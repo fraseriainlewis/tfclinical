@@ -2,7 +2,7 @@
 title: "intro_to_tfp"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{intro_to_tfp_light}
+  %\VignetteIndexEntry{intro_to_tfp}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
