@@ -5,5 +5,7 @@
  ## tfclinical
 R package of vignettes for learning how to use Tensorflow in RStudio, uses R and Python in Rmarkdown.
  
- See [here](https://fraseriainlewis.github.io/tfclinical/) for documentation
+This is the repo. Contributions welcome! 
+
+See [here](https://fraseriainlewis.github.io/tfclinical/) for pkgdown website.
 
