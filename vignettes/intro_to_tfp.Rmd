@@ -10,6 +10,8 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -28,7 +30,7 @@ knitr::opts_chunk$set(
 
 **This vignette shows some of the key building blocks in building a Bayesian model in TFP**. It uses a mixture of R and Python. 
 
-R is used for data set creation and generation of figures, and Python for model building in TFP. This is a general theme of the vignettes; Python is used when direct interaction with the TFP API is needed, otherwise R is used as the assumed go-to language of choice for statisticians. 
+R is used for data set creation and generation of figures, and Python for model building in TFP. This is a general theme of the vignettes; Python is used when direct interaction with the TFP API is needed, otherwise R is used as the assumed go-to language of choice for statisticians.
 
 ### Example Model - Formulation
 The model implemented here into TPF code is the following $\mbox{logit}(\theta)$ - TBC. Also include non-centered parmeterization.
