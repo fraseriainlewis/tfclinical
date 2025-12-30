@@ -2,4 +2,5 @@
 
 ### All vignettes
 
-- [intro_to_tfp](https://fraseriainlewis.github.io/tfclinical/articles/intro_to_tfp.md):
+- [TFP Basics - simple model
+  building](https://fraseriainlewis.github.io/tfclinical/articles/intro_to_tfp.md):

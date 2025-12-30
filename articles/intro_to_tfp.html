@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>intro_to_tfp • tfclinical</title>
+<title>TFP Basics - simple model building • tfclinical</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="intro_to_tfp">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="TFP Basics - simple model building">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,7 +38,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/intro_to_tfp.html">intro_to_tfp</a></li>
+<li><a class="dropdown-item" href="../articles/intro_to_tfp.html">TFP Basics - simple model building</a></li>
   </ul>
 </li>
       </ul>
@@ -58,7 +58,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>intro_to_tfp</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>TFP Basics - simple model building</h1>
             
       
 
@@ -68,16 +68,50 @@
     
     
 <div class="section level2">
-<h2 id="dataset">Dataset<a class="anchor" aria-label="anchor" href="#dataset"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
+<p>This vignette shows some of the key building blocks in building a
+Bayesian model in TFP. It uses a mixture of R and Python. R is used for
+data set creation and generation of figures, and Python for model
+building in TFP. This is a general theme of the vignettes - R is used
+where possible but with Python used when direct interaction with the TFP
+API is needed.</p>
+<p>In TF and TPF models are written in Python but they use TF tensors as
+arguments, rather than more familiar Python structures such as numpy
+arrays. This distinction is important as tensors are strongly typed and
+so care is needed, including when moving back and forth to R via
+reticulate.</p>
+</div>
+<div class="section level2">
+<h2 id="make-data-available-to-tfp-models">Make data available to TFP models<a class="anchor" aria-label="anchor" href="#make-data-available-to-tfp-models"></a>
+</h2>
+<p>Assuming the data to be modelled, i.e. the source data from which
+parameters are to be estimates via model fitting, are loaded into R or
+generated in R then a first step is to make these data available to TFP.
+This functionality is readily provided by <a href="https://rstudio.github.io/reticulate/" class="external-link">reticulate</a>, the only
+watch out is that the Python pandas library is required to deal with
+data.frames (see installation instructions - pandas can be included as
+part of Rstudio’s tfprobability install script).</p>
+<div class="section level3">
+<h3 id="example-data-set">Example data set<a class="anchor" aria-label="anchor" href="#example-data-set"></a>
+</h3>
+<p>The R chunk below creates a simple dataset of three cols:</p>
+<ul>
+<li>a binary response variable (0/1 = non-responder/responder),</li>
+<li>a binary treatment variable (0/1 = control/test treatment)</li>
+<li>and a basket ID variable. (1)</li>
+</ul>
+<p>The basket ID is currently set fixed 1, denoting there is only one
+basket in this trial, i.e. a classical two arm randomized trial design.
+Baskets will be added in other vignettes.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Prepare model inputs</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">9999</span><span class="op">)</span></span>
 <span><span class="co"># Set up data</span></span>
-<span><span class="va">rr_k_ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.60</span><span class="op">)</span>       <span class="co"># control response rate for each basket</span></span>
-<span><span class="va">rr_k_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.58</span><span class="op">)</span>        <span class="co"># treatment response rate for each basket</span></span>
+<span><span class="va">rr_k_ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.60</span><span class="op">)</span>        <span class="co"># control response rate for each basket</span></span>
+<span><span class="va">rr_k_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.58</span><span class="op">)</span>         <span class="co"># treatment response rate for each basket</span></span>
 <span></span>
-<span><span class="va">K</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">rr_k_ctrl</span><span class="op">)</span>             <span class="co"># number of baskets</span></span>
+<span><span class="va">K</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">rr_k_ctrl</span><span class="op">)</span>        <span class="co"># number of baskets</span></span>
 <span></span>
 <span><span class="va">N_k_ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">250</span>, <span class="va">K</span><span class="op">)</span>     <span class="co"># number of control participants per basket</span></span>
 <span><span class="va">N_k_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">250</span>, <span class="va">K</span><span class="op">)</span>      <span class="co"># number of treatment participants per basket</span></span>
@@ -95,35 +129,124 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">y</span>,basketID<span class="op">=</span><span class="va">k_vec</span>,Treatment<span class="op">=</span><span class="va">z_vec</span><span class="op">)</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">thedata</span><span class="op">)</span><span class="op">)</span> </span>
-<span><span class="va">py</span><span class="op">$</span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu">r_to_py</span><span class="op">(</span><span class="va">thedata</span><span class="op">)</span> <span class="co"># to ensure correct form to python</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#os.environ["KERAS_BACKEND"] = "jax"</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="im">import</span> keras</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#import bash</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="im">import</span> tensorflow_probability <span class="im">as</span> tfp</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="im">from</span> tensorflow_probability <span class="im">import</span> distributions <span class="im">as</span> tfd</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>tfb <span class="op">=</span> tfp.bijectors</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="im">import</span> warnings</span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="bu">print</span>(sys.version)</span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="bu">print</span>(sys.executable)</span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"TensorFlow version:            </span><span class="sc">{</span>tf<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"TensorFlow Probability version: </span><span class="sc">{</span>tfp<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f" rows=</span><span class="sc">{</span>thedata<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> cols=</span><span class="sc">{</span>thedata<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span></span>
+<span><span class="va">py</span><span class="op">$</span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu">r_to_py</span><span class="op">(</span><span class="va">thedata</span><span class="op">)</span> <span class="co"># THE KEY LINE - makes data available to Python </span></span></code></pre></div>
+<table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;">
+y
+</th>
+<th style="text-align:right;">
+basketID
+</th>
+<th style="text-align:right;">
+Treatment
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;font-weight: bold;color: blue !important;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level2">
+<h2 id="python-setup">Python setup<a class="anchor" aria-label="anchor" href="#python-setup"></a>
+</h2>
+<p>In this Python chunk we load in the necessary libraries for TFP</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="im">import</span> keras</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="im">import</span> tensorflow_probability <span class="im">as</span> tfp</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="im">from</span> tensorflow_probability <span class="im">import</span> distributions <span class="im">as</span> tfd</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>tfb <span class="op">=</span> tfp.bijectors</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#print(sys.version)</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#print(sys.executable)</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#print(f"TensorFlow version:            {tf.__version__}")</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#print(f"TensorFlow Probability version: {tfp.__version__}")</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#print(f" rows={thedata.shape[0]} cols={thedata.shape[1]}")</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>y_data<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">0</span>], dtype <span class="op">=</span> tf.float32)</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>k_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">1</span>], dtype <span class="op">=</span> tf.float32)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>z_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">2</span>], dtype <span class="op">=</span> tf.float32)</span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>y_data<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">0</span>], dtype <span class="op">=</span> tf.float32)</span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>k_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">1</span>], dtype <span class="op">=</span> tf.float32)</span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>z_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">2</span>], dtype <span class="op">=</span> tf.float32)</span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"y=</span><span class="sc">{</span>z_vec<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#print(f"y={z_vec}")</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="define-the-probability-model">Define the Probability Model<a class="anchor" aria-label="anchor" href="#define-the-probability-model"></a>
+</h2>
+<p>This chunk defines the joint probability distribution for our model,
+i.e., the data likelihood and all the prior densities.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="kw">def</span> make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    beta<span class="op">=</span>tf.stack([mu0 <span class="op">+</span> sigma0 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">0</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                   mu1 <span class="op">+</span> sigma1 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">1</span>]])</span>
@@ -140,17 +263,18 @@
 <span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  tfd.HalfNormal(scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"sigma1"</span>),  <span class="co"># `tau` stan above</span></span>
 <span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span>tf.zeros(<span class="dv">2</span>), scale<span class="op">=</span>tf.ones(<span class="dv">2</span>), name<span class="op">=</span><span class="st">"log_odd_control_and_ratio"</span>), <span class="co">## indep norms, vector</span></span>
 <span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  make_observed_dist</span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>])    </span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    </span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    </span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="kw">def</span> log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="co">"""Unnormalized target density as a function of states."""</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="cf">return</span> model.log_prob((</span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))</span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a> </span></code></pre></div>
-<p><img src="precomputed/plot11.png" class="r-plt" alt="" width="75%" style="display: block; margin: auto;"></p>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>])   </span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>mysample<span class="op">=</span>model.sample(<span class="dv">1</span>)</span></code></pre></div>
+<p><img src="precomputed/vg1_table2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="kw">def</span> log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="co">"""Unnormalized target density as a function of states."""</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="cf">return</span> model.log_prob((</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a> </span></code></pre></div>
 </div>
-  </main>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
