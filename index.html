@@ -56,16 +56,14 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 style="display: flex; align-items: left; gap: 15px;">
- tfclinical
-</h1>
+  <main id="main" class="col-md-9"><div style="font-size: 24px;">
+<!--<h1 style="display: flex; align-items: right; gap: 15px;"> -->
+<p><img src="reference/figures/logo.png" style="height: 125px;"> tfclinical</p>
 </div>
-<div class="section level2">
-<h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
-</h2>
+<!--  tfclinical
+</h1> -->
+<div style="font-size: 17px;">
 <p>This package is a collection of multilingual (R and Python) vignettes showing how to use <a href="https://www.tensorflow.org/probability" class="external-link">Tensorflow Probability (TPF)</a> in <a href="https://posit.co/downloads/" class="external-link">RStudio</a>. The focus is modelling building and trial simulation for clinical research and drug development activities.</p>
-</div>
 <div class="section level2">
 <h2 id="why-tensorflow-probability">Why Tensorflow Probability?<a class="anchor" aria-label="anchor" href="#why-tensorflow-probability"></a>
 </h2>
@@ -80,11 +78,12 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Due to the computationally intensive nature of the code the vignettes show precomputed outputs, but the vignettes contain all the necessary code to repeat the computations. To run the computations the <a href="https://github.com/fraseriainlewis/tfclinical.git" class="external-link">tfclinical</a> library needs installed and it has one main dependency <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">tfprobability</a>. The tfprobability library is not directly used but installing this (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">installation instructions</a> ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras’’ option.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If Python is not already installed on a VM or Linux machine then the lines below are needed at bash</span></span>
 <span><span class="co">#</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
 
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>

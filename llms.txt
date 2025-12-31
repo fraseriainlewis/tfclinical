@@ -1,6 +1,4 @@
-# tfclinical
-
-## Purpose
+![](reference/figures/logo.png) tfclinical
 
 This package is a collection of multilingual (R and Python) vignettes
 showing how to use [Tensorflow Probability
