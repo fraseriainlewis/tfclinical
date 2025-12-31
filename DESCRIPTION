@@ -19,9 +19,12 @@ Imports:
     rstan,
     bayesplot,
     kableExtra,
-    knitr
+    knitr,
+    rstanarm
 Encoding: UTF-8
 LazyData: true
 URL: https://fraseriainlewis.github.io/tfclinical/
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3
+Suggests: 
+    rmarkdown

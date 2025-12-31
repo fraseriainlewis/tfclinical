@@ -4,4 +4,5 @@ import(reticulate,
     rstan,
     bayesplot,
     kableExtra,
-    knitr)
+    knitr,
+    rstanarm)
