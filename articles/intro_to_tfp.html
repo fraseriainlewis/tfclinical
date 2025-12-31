@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>TFP Basics - simple model building • tfclinical</title>
+<title>Bayesian model building walkthrough 1 • tfclinical</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="TFP Basics - simple model building">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Bayesian model building walkthrough 1">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,7 +38,7 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/intro_to_tfp.html">TFP Basics - simple model building</a></li>
+<li><a class="dropdown-item" href="../articles/intro_to_tfp.html">Bayesian model building walkthrough 1</a></li>
   </ul>
 </li>
       </ul>
@@ -58,7 +58,7 @@
 <script src="intro_to_tfp_files/kePrint-0.0.1/kePrint.js"></script><link href="intro_to_tfp_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>TFP Basics - simple model building</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Bayesian model building walkthrough 1</h1>
             
       
 
@@ -67,20 +67,18 @@
 
     
     
-<div style="font-size: 17px;">
 <div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+<h2 id="overview">1. Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><strong>This vignette shows some of the key building blocks in
-building a Bayesian model in TFP</strong>. It uses a mixture of R and
-Python.</p>
-<p>R is used for data set creation and generation of figures, and Python
-for model building in TFP. This is a general theme of the vignettes;
-Python is used when direct interaction with the TFP API is needed,
-otherwise R is used as the assumed go-to language of choice for
+<p>This vignette shows some of the key building blocks in building a
+Bayesian model in TFP. It uses a mixture of R and Python Rmarkdown
+cells. R is used for data set creation and generation of figures, and
+Python for model building in TFP. This is a general theme of the
+vignettes; Python is used when direct interaction with the TFP API is
+needed, otherwise R is used as the assumed go-to language of choice for
 statisticians.</p>
 <div class="section level3">
-<h3 id="example-model---formulation">Example Model - Formulation<a class="anchor" aria-label="anchor" href="#example-model---formulation"></a>
+<h3 id="example-model---formulation">1.1 Example Model - Formulation<a class="anchor" aria-label="anchor" href="#example-model---formulation"></a>
 </h3>
 <p>The model implemented here into TPF code is the following
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">logit</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mbox{logit}(\theta)</annotation></semantics></math>
@@ -88,7 +86,7 @@ statisticians.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="make-data-available-to-tfp-models">Make data available to TFP models<a class="anchor" aria-label="anchor" href="#make-data-available-to-tfp-models"></a>
+<h2 id="make-data-available-to-tfp-models">2. Make data available to TFP models<a class="anchor" aria-label="anchor" href="#make-data-available-to-tfp-models"></a>
 </h2>
 <p>Assuming the data to be modelled, i.e. the source data from which
 parameters are to be estimates via model fitting, are loaded into R or
@@ -103,7 +101,7 @@ arrays. This distinction is important as tensors are strongly typed and
 so care is needed, including when moving back and forth to R via
 reticulate.</p>
 <div class="section level3">
-<h3 id="example-data-set">Example data set<a class="anchor" aria-label="anchor" href="#example-data-set"></a>
+<h3 id="example-data-set">2.1 Example data set<a class="anchor" aria-label="anchor" href="#example-data-set"></a>
 </h3>
 <p>The R chunk below creates a simple dataset of three cols:</p>
 <ul>
@@ -226,7 +224,7 @@ Treatment
 </div>
 </div>
 <div class="section level2">
-<h2 id="python-setup-and-data-set-management">Python setup and data set management<a class="anchor" aria-label="anchor" href="#python-setup-and-data-set-management"></a>
+<h2 id="setup-python-and-get-data-from-r">3. Setup python and get data from R<a class="anchor" aria-label="anchor" href="#setup-python-and-get-data-from-r"></a>
 </h2>
 <p>We first load in the necessary libraries for TFP and then convert the
 dataset passed from R into tensors. Note that as tensors are strongly
@@ -250,65 +248,94 @@ typed we explicitly define the storage type.</p>
 <span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>k_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">1</span>], dtype <span class="op">=</span> tf.float32)</span>
 <span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>z_vec<span class="op">=</span>tf.convert_to_tensor(thedata.iloc[:,<span class="dv">2</span>], dtype <span class="op">=</span> tf.float32)</span>
 <span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#print(f"y={z_vec}")</span></span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#print(f"y={z_vec}") #if using locally this prints out to R console</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="define-the-probability-model">Define the Probability Model<a class="anchor" aria-label="anchor" href="#define-the-probability-model"></a>
+<h2 id="define-the-probability-model">4. Define the Probability Model<a class="anchor" aria-label="anchor" href="#define-the-probability-model"></a>
 </h2>
 <p>We now fully define our model, i.e., the data likelihood and all the
-prior densities, and we use a function called
-<code>JointDistributionSequentialAutoBatched</code>. The are a number of
-alternatives TFP function for defining Bayesian models. This is one of
-the simplest but still capable of defining complex models. The model
-definition in <code>JointDistributionSequentialAutoBatched</code> must
-follow a strict convention which is explained in the comments in the
-code chunk.</p>
-<p>The model formulation here uses a non-centered approach to aim with
-MCMC estimation as discussed in the stan manual <a href="https://mc-stan.org/learn-stan/case-studies/divergences_and_bias.html" class="external-link">here</a></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># DATA LIKELIHOOD - defined as a separate function which is passed to </span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># JointDistributionSequentialAutoBatched</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: the arguments passed are in the REVERSE ORDER from the sequence that these parameters </span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># are defined in the subsequent JointDistributionSequentialAutoBatched. This reverse ordering </span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># is essential. </span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="kw">def</span> make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="co"># beta is a two element tensor, beta[0] parameter for the log odds of the control arm effect</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="co">#                               beta[1] log odds ratio of treatment to control</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    beta<span class="op">=</span>tf.stack([mu0 <span class="op">+</span> sigma0 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">0</span>],         </span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>                   mu1 <span class="op">+</span> sigma1 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">1</span>]]) <span class="co">#tf.stack is used to concat tensors</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>                   </span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="co"># return a vector of Bernoulli probabilities, one for each patient, and these estimates </span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="co"># dependent on which arm the patient was randomized to.</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>    <span class="cf">return</span>(tfd.Independent(</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>        tfd.Bernoulli(logits<span class="op">=</span>beta[<span class="dv">0</span>]<span class="op">+</span>beta[<span class="dv">1</span>]<span class="op">*</span>z_vec), <span class="co">#</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>        reinterpreted_batch_ndims <span class="op">=</span> <span class="dv">1</span> <span class="co"># This tells TFP that log_prob here is a single value</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>                                      <span class="co"># equal to sum of individual log_probs, a vector</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>                                      <span class="co"># technically moves tensor batch dimension into event dimension</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    ))</span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>    </span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co"># DEFINE FULL MODEL - </span><span class="al">NOTE</span><span class="co">, uses     </span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># model is y[i] = Bernoulli(p[i]) where logit(p[i]) = intercept + treatment*z[i]</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>model <span class="op">=</span> tfd.JointDistributionSequentialAutoBatched([</span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span><span class="fl">0.</span>, scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"mu0"</span>),  <span class="co"># prior for mean of control arm log odds </span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  tfd.HalfNormal(scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"sigma0"</span>),   <span class="co"># prior for sd of control arm log odds</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span><span class="fl">0.</span>, scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"mu1"</span>),  <span class="co"># prior for mean of treatment log odds ratio</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  tfd.HalfNormal(scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"sigma1"</span>),   <span class="co"># prior for sd of treatment log odds ratio</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span>tf.zeros(<span class="dv">2</span>), scale<span class="op">=</span>tf.ones(<span class="dv">2</span>), name<span class="op">=</span><span class="st">"log_odd_control_and_ratio"</span>), <span class="co">## indep norms</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>                                              <span class="co"># a vector, due to the non-centered parameterization                        </span></span>
-<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  make_observed_dist <span class="co"># the data likelihood defined as a function above</span></span>
-<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>])   </span>
-<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co"># Sample one variate from this joint probability model - simply to show what structure the model </span></span>
-<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co"># produces/needs. i.e. what the state variable of the model looks like in TF</span></span>
-<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>mysample<span class="op">=</span>model.sample(<span class="dv">1</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+prior densities. We use a TFP function called
+JointDistributionSequentialAutoBatched. The are a number of alternative
+TFP functions for defining Bayesian models. This is one of the simplest
+but still capable of defining complex models. The model definition in
+JointDistributionSequentialAutoBatched <strong>must follow a strict
+convention</strong> which is explained in the comments.</p>
+<p>As above the model formulation here uses a non-centered approach to
+aim with MCMC estimation as discussed in the stan manual <a href="https://mc-stan.org/learn-stan/case-studies/divergences_and_bias.html" class="external-link">here</a>.</p>
+<div class="section level3">
+<h3 id="define-the-likelihood">4.1 Define the likelihood<a class="anchor" aria-label="anchor" href="#define-the-likelihood"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Define LIKELIHOOD - this is defined first, as functions need defined before used</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># The arguments in our function are in the REVERSE ORDER that the parameters </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># appear in JointDistrbutionSequential this is essential</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="kw">def</span> make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="co"># beta is a two element tensor, beta[0] parameter for the log odds of the control arm effect</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="co">#                               beta[1] log odds ratio of treatment to control</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    beta<span class="op">=</span>tf.stack([mu0 <span class="op">+</span> sigma0 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">0</span>],         </span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>                   mu1 <span class="op">+</span> sigma1 <span class="op">*</span> log_odd_control_and_ratio[<span class="dv">1</span>]])</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>                   <span class="co">#tf.stack is used to stack tensors without creating new tensors</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>                   </span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="co"># return a vector of Bernoulli probabilities, one for each patient, and these estimates </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="co"># dependent on which arm the patient was randomized to, i.e. two unique values</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="cf">return</span>(tfd.Independent(</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>        tfd.Bernoulli(logits<span class="op">=</span>beta[<span class="dv">0</span>]<span class="op">+</span>beta[<span class="dv">1</span>]<span class="op">*</span>z_vec), <span class="co">#define as logits</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>        reinterpreted_batch_ndims <span class="op">=</span> <span class="dv">1</span> <span class="co"># This tells TFP that log_prob here is a single value</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>                                      <span class="co"># equal to sum of individual log_probs, a vector</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>                                      <span class="co"># this is usual when defining a data likelihood</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    ))</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="define-the-full-model">4.2 Define the full model<a class="anchor" aria-label="anchor" href="#define-the-full-model"></a>
+</h3>
+<p>This is straightforward provided it’s done in sequence. Care is
+needed in understanding whether parameters are scalars or vectors,
+especially in more complex models which feature a design matrix and
+matrix algebra. Simulating a realization from the model is a simple way
+to see what the structure of the <em>state</em> variable of the model
+is. In more complex models simulating multiple values is useful to check
+the structure is as expected.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># DEFINE FULL MODEL - hyperparams hard coded     </span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># model is y[i] = Bernoulli(p[i]) where logit(p[i]) = intercept + treatment*z[i]</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>model <span class="op">=</span> tfd.JointDistributionSequentialAutoBatched([</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span><span class="fl">0.</span>, scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"mu0"</span>),  <span class="co"># prior for mean of control arm log odds </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  tfd.HalfNormal(scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"sigma0"</span>),   <span class="co"># prior for sd of control arm log odds</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span><span class="fl">0.</span>, scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"mu1"</span>),  <span class="co"># prior for mean of treatment log odds ratio</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  tfd.HalfNormal(scale<span class="op">=</span><span class="fl">2.5</span>, name<span class="op">=</span><span class="st">"sigma1"</span>),   <span class="co"># prior for sd of treatment log odds ratio</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="co"># now come to the standard normals resulting from non-centred parameterization</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="co"># define these as vector MVN with identity scale matrix</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  tfd.Normal(loc<span class="op">=</span>tf.zeros(<span class="dv">2</span>), scale<span class="op">=</span>tf.ones(<span class="dv">2</span>), name<span class="op">=</span><span class="st">"log_odd_control_and_ratio"</span>), </span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="co"># now finally define the likelihood as we have already defined parameters in this</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  make_observed_dist <span class="co"># the data likelihood defined as a function above</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>])   </span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>tf.random.set_seed(<span class="dv">9999</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co"># Sample one variate from this joint probability model - shows what structure the model </span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co"># produces/needs. i.e. what the state variable of the model looks like in TF</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>mysample<span class="op">=</span>model.sample(<span class="dv">1</span>) <span class="co"># 1 = one random variate</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>mysample<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">mysample</span><span class="op">)</span></span></code></pre></div>
-<p><img src="precomputed/vg1_table2.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="kw">def</span> log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="co">"""Unnormalized target density as a function of states."""</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="cf">return</span> model.log_prob((</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a> </span></code></pre></div>
+<p><img src="precomputed/vg1_text1.png" class="r-plt" alt="" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="define-the-log_prog_fn">4.3 Define the log_prog_fn<a class="anchor" aria-label="anchor" href="#define-the-log_prog_fn"></a>
+</h3>
+<p>To use the various MCMC samplers provided in TFP we need to
+explicitly provide a function which returns the log of the posterior
+density. This is straightforward and simply involves wrapping around the
+existing model method log_prob() as seen below.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># the ordering of the arguments in this must match exactly the ordering used in</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co"># JointDistributionSequentialAutoBatched</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="kw">def</span> log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="cf">return</span> model.log_prob((</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data)) </span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>                                                         <span class="co">## last argument is the DATA (y) </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># useful to see how to call this. We use the simulated values above      </span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>mylogp<span class="op">=</span>log_prob_fn(mysample[<span class="dv">0</span>], mysample[<span class="dv">1</span>], mysample[<span class="dv">2</span>],mysample[<span class="dv">3</span>], mysample[<span class="dv">4</span>])     </span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">mylogp</span><span class="op">)</span></span></code></pre></div>
+<p><img src="precomputed/vg1_text2.png" class="r-plt" alt="" width="75%" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

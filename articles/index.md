@@ -2,5 +2,5 @@
 
 ### All vignettes
 
-- [TFP Basics - simple model
-  building](https://fraseriainlewis.github.io/tfclinical/articles/intro_to_tfp.md):
+- [Bayesian model building walkthrough
+  1](https://fraseriainlewis.github.io/tfclinical/articles/intro_to_tfp.md):
