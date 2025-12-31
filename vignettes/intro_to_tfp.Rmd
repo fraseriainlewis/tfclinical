@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 #knitr::opts_chunk$set(eval = !on_github)
 
 ```
+::: {style="font-size: 17px;"}
 ## Overview
 
 **This vignette shows some of the key building blocks in building a Bayesian model in TFP**. It uses a mixture of R and Python. 
@@ -190,4 +191,4 @@ def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
       mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))
  
 ```
-
+:::

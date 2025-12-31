@@ -2,9 +2,12 @@ url: https://fraseriainlewis.github.io/tfclinical/
 template:
   bootstrap: 5
   bslib:
-    bootswatch: materia 
-    pkgdown-nav-height: 80px
+    light-switch: true
+    #theme: gruvbox-light
+    #theme-dark: gruvbox-dark    
+    bootswatch: united #materia 
+    #pkgdown-nav-height: 90px
     #font-size-base: 1.0rem  # Controls main body text
     #h1-font-size: 2.0rem    # Controls specific headers
     # 3. Ensures line height remains proportional to the smaller text
-    code-font-size: 0.9rem # Controls code blocks
+    code-font-size: 0.8rem # Controls code blocks
