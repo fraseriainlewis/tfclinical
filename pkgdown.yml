@@ -3,7 +3,8 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   intro_to_tfp: intro_to_tfp.html
-last_built: 2025-12-31T02:14Z
+  neg_bin_tfp_stan: neg_bin_tfp_stan.html
+last_built: 2025-12-31T09:16Z
 urls:
   reference: https://fraseriainlewis.github.io/tfclinical/reference
   article: https://fraseriainlewis.github.io/tfclinical/articles
