@@ -22,7 +22,8 @@ Imports:
     rstanarm,
     ggplot2,
     zeallot,
-    purrr
+    purrr,
+    ragg
 Encoding: UTF-8
 LazyData: true
 URL: https://fraseriainlewis.github.io/tfclinical/

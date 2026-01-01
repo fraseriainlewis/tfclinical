@@ -6,3 +6,4 @@
 ^\.github$
 ^index\.md$
 ^vignettes/*\.Rmd\.orig$
+^ignore_me_wip$

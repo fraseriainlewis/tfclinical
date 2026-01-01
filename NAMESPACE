@@ -7,4 +7,5 @@ import(reticulate,
     knitr,
     zeallot,
     purrr,
-    ggplot2)
+    ggplot2,
+    ragg)
