@@ -5,5 +5,5 @@
 ^pkgdown$
 ^\.github$
 ^index\.md$
-^vignettes/*\.Rmd\.orig$
 ^ignore_me_wip$
+^vignettes/intro_to_tfp\.orig\.Rmd$

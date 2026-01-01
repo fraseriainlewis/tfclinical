@@ -9,7 +9,7 @@
 <!--  tfclinical
 </h1> -->
 
-::: {style="font-size: 17px;"}
+<!-- ::: {style="font-size: 17px;"} this hard codes font size, only way to do it -->
 This package is a collection of multilingual (R and Python) vignettes showing how to use [Tensorflow Probability (TPF)](https://www.tensorflow.org/probability) in [RStudio](https://posit.co/downloads/). The focus is modelling building and trial simulation for clinical research and drug development activities.
 
 
@@ -22,7 +22,8 @@ The vignettes range from demonstrating basic step-by-step mechanics of running M
 
 ## Installation
 Due to the computationally intensive nature of the code the vignettes show precomputed outputs, but the vignettes contain all the necessary code to repeat the computations. To run the computations the [tfclinical](https://github.com/fraseriainlewis/tfclinical.git) library needs installed and it has one main dependency [tfprobability](https://rstudio.github.io/tfprobability/index.html). The tfprobability library is not directly used but installing this (see [installation instructions](https://rstudio.github.io/tfprobability/index.html) ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras'' option. 
-:::
+<!-- ::: other pair from above-->
+
 ```r
 # If Python is not already installed on a VM or Linux machine then the lines below are needed at bash
 #

@@ -11,3 +11,7 @@ template:
     #h1-font-size: 2.0rem    # Controls specific headers
     # 3. Ensures line height remains proportional to the smaller text
     code-font-size: 0.8rem # Controls code blocks
+
+build:
+  exclude: ["vignettes/intro_to_tfp.orig.Rmd"]
+
