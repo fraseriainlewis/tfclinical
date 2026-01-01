@@ -5,8 +5,10 @@
 set.seed(9999)
 library(rstanarm)
 data(roaches)
-roaches$roach1<-roaches$roach1/100;# manual
-py$data<-r_to_py(roaches)
+roaches_cp<-roaches # will make manual edits 
+roaches_cp$roach1<-roaches_cp$roach1/100;# manual
+roaches_cp$exposure2<-log(roaches_cp$exposure2) # exposure is logged
+py$data<-r_to_py(roaches_cp)
 ```
 
 ``` python
@@ -23,7 +25,6 @@ y_data=tf.convert_to_tensor(data.iloc[:,0], dtype = tf.float32)
 X=tf.convert_to_tensor(data.iloc[:,1:],dtype=tf.float32)
 X=tf.concat([tf.ones([rows,1],dtype=tf.float32), X], axis=1)
 
-#print(X)
 
 beta_expos=tf.convert_to_tensor(1.0,dtype=tf.float32) # dummy
 
@@ -145,7 +146,7 @@ t1 = time.time()
 print("Inference ran in {:.2f}s.".format(t1-t0))
 
 samples = list(map(lambda x: tf.squeeze(x).numpy(), samples))
-#print(samples)    
+print(samples)    
     
 ```
 
@@ -167,6 +168,10 @@ dev.off()
 ![](precomputed/vg2_plot1.png)
 
 ``` r
+# reloading data as stan does the log(exposure) internally
+data(roaches)
+roaches$roach1<-roaches$roach1/100;# manual
+
 stan_glm1 <- stan_glm(y ~ roach1 + treatment + senior, offset = log(exposure2),
                        data = roaches, family = neg_binomial_2,
                        prior = normal(0, 2.5),
