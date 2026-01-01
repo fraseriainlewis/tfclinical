@@ -5,7 +5,8 @@ articles:
   intro_to_tfp: intro_to_tfp.html
   neg_bin_tfp_stan: neg_bin_tfp_stan.html
   normal_tf_stan: normal_tf_stan.html
-last_built: 2026-01-01T01:12Z
+  tf_gnn_example: tf_gnn_example.html
+last_built: 2026-01-01T03:10Z
 urls:
   reference: https://fraseriainlewis.github.io/tfclinical/reference
   article: https://fraseriainlewis.github.io/tfclinical/articles
