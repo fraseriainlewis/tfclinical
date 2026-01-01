@@ -1,8 +1,10 @@
 exportPattern("^[[:alpha:]]+")
 import(reticulate,
     tfprobability,
-    rstan,
+    rstanarm,
     bayesplot,
     kableExtra,
     knitr,
-    rstanarm)
+    zeallot,
+    purrr,
+    ggplot2)
