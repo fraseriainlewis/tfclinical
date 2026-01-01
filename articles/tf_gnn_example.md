@@ -23,6 +23,7 @@ site](https://colab.research.google.com/github/tensorflow/gnn/blob/master/exampl
 Needs compatible versions (installed via pip in venv hard coding
 versions):
 
+- Python: 3.11.14
 - Name: tf_keras
   - Version: 2.16.0
 - Name: tensorflow
