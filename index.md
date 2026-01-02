@@ -20,13 +20,44 @@ This package is a collection of multilingual (R and Python) vignettes showing ho
 The vignettes range from demonstrating basic step-by-step mechanics of running MCMC in RStudio using TFP, for example how to use **adaptive step sizes** and **multiple chains**, through to complete examples of simulating Bayesian basket trials using TFP and comparing the results against rstan. Most vignettes include a comparison with [rstan](https://mc-stan.org/rstan/).
 
 
-## Installation
+## Installation overview
 Due to the computationally intensive nature of the code the vignettes show precomputed outputs, but the vignettes contain all the necessary code to repeat the computations. To run the computations the [tfclinical](https://github.com/fraseriainlewis/tfclinical.git) library needs installed and it has one main dependency [tfprobability](https://rstudio.github.io/tfprobability/index.html). The tfprobability library is not directly used but installing this (see [installation instructions](https://rstudio.github.io/tfprobability/index.html) ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras'' option. 
 <!-- ::: other pair from above-->
 
+### Installation details for Linux
+Python needs to be installed, and pyenv can also be a very useful tool if dealing with multiple Python version and to avoid impacting the system Python installation.  
 ```r
-# If Python is not already installed on a VM or Linux machine then the lines below are needed at bash
-#
-list(ls())
+##########################################################
+# in RStudio Terminal (not console) or Bash
+sudo apt-get update
+sudo apt-get install python3-venv python3-pip python3-dev
+##########################################################
+# in RStudio console
+install.packages("tensorflow")
+library(tensorflow)
+install_tensorflow(extra_packages = c("tf_keras", "tensorflow", "tensorflow-probability","pandas"))
+#restart session
+install.packages("tfprobability")
+library(tensorflow)
+library(tfprobability)
+d <- tfd_binomial(total_count = 7, probs = 0.3) # if this works then tensorflow us correctly installed
+##########################################################
+```
+### Installation details for Linux
+On Windows the key part is to have a suitable python installation and also that RStudio can locate this. Once this is in place then the same installation applied inside RStudio as for the above Linux case. 
+
+### Installation of separate Python venv
+For the Graphical Neural Network (GNN) vignette this requires a separate Python venv to be setup and then instructing reticulate to use this
+```bash
+# in bash
+python3 -m venv myenv
+source myenv/bin/activate
+# now install via pip the specific library versions needed
+```
+```r
+# in RStudio console
+library(reticulate)
 
 ```
+
+
