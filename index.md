@@ -26,7 +26,7 @@ simulating Bayesian basket trials using TFP and comparing the results
 against rstan. Most vignettes include a comparison with
 [rstan](https://mc-stan.org/rstan/).
 
-## Installation
+## Installation overview
 
 Due to the computationally intensive nature of the code the vignettes
 show precomputed outputs, but the vignettes contain all the necessary
@@ -42,8 +42,49 @@ exception, in that we also use the Python pandas library and so this
 should be included in the tfprobabilty install script (see below) in the
 \`\`extras’’ option.
 
+### Installation details for Linux
+
+Python needs to be installed, and pyenv can also be a very useful tool
+if dealing with multiple Python version and to avoid impacting the
+system Python installation.
+
 ``` r
-# If Python is not already installed on a VM or Linux machine then the lines below are needed at bash
-#
-list(ls())
+##########################################################
+# in RStudio Terminal (not console) or Bash
+sudo apt-get update
+sudo apt-get install python3-venv python3-pip python3-dev
+##########################################################
+# in RStudio console
+install.packages("tensorflow")
+library(tensorflow)
+install_tensorflow(extra_packages = c("tf_keras", "tensorflow", "tensorflow-probability","pandas"))
+#restart session
+install.packages("tfprobability")
+library(tensorflow)
+library(tfprobability)
+d <- tfd_binomial(total_count = 7, probs = 0.3) # if this works then tensorflow us correctly installed
+##########################################################
+```
+
+### Installation details for Linux
+
+On Windows the key part is to have a suitable python installation and
+also that RStudio can locate this. Once this is in place then the same
+installation applied inside RStudio as for the above Linux case.
+
+### Installation of separate Python venv
+
+For the Graphical Neural Network (GNN) vignette this requires a separate
+Python venv to be setup and then instructing reticulate to use this
+
+``` bash
+# in bash
+python3 -m venv myenv
+source myenv/bin/activate
+# now install via pip the specific library versions needed
+```
+
+``` r
+# in RStudio console
+library(reticulate)
 ```

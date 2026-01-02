@@ -141,7 +141,7 @@ Baskets will be added in other vignettes.</p>
 <span></span>
 <span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">y</span>,basketID<span class="op">=</span><span class="va">k_vec</span>,Treatment<span class="op">=</span><span class="va">z_vec</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">py</span><span class="op">$</span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu">r_to_py</span><span class="op">(</span><span class="va">thedata</span><span class="op">)</span> <span class="co"># THE KEY LINE - makes data available to Python </span></span>
+<span><span class="va">py</span><span class="op">$</span><span class="va">thedata</span><span class="op">&lt;-</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/r-py-conversion.html" class="external-link">r_to_py</a></span><span class="op">(</span><span class="va">thedata</span><span class="op">)</span> <span class="co"># THE KEY LINE - makes data available to Python </span></span>
 <span>                             <span class="co"># this is converted into a pandas dataframe object in Python</span></span></code></pre></div>
 <table class="table table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead><tr>
