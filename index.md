@@ -47,17 +47,19 @@ d <- tfd_binomial(total_count = 7, probs = 0.3) # if this works then tensorflow 
 On Windows the key part is to have a suitable python installation and also that RStudio can locate this. Once this is in place then the same installation applied inside RStudio as for the above Linux case. 
 
 ### Installation of separate Python venv
-For the Graphical Neural Network (GNN) vignette this requires a separate Python venv to be setup and then instructing reticulate to use this
+For the Graphical Neural Network (GNN) vignette this requires a separate Python venv to be setup because some tensorflow projects, such as TF-GNN, have very strict compatibility requirements which likely need install versions hardcoded. This has only been tested on Linux and MacOS.
 ```bash
 # in bash
-python3 -m venv myenv
-source myenv/bin/activate
+python3 -m venv gnn
+source gnn/bin/activate
 # now install via pip the specific library versions needed
+pip install tensorflow==2.16.2 tf_keras==2.16.0 tensorflow-gnn
 ```
+The second part is to instruct reticulate to use this Python venv rather than one of the existing virtualenv environments, e.g. that created when tfprobability is installed.
 ```r
 # in RStudio console
 library(reticulate)
-
+use_virtualenv("/Users/work/gnn", required = TRUE) # tell R to use the python interpreter and libraries in here
 ```
 
 
