@@ -1,6 +1,7 @@
 url: https://fraseriainlewis.github.io/tfclinical/
 template:
   bootstrap: 5
+  math-rendering: mathjax
   bslib:
     light-switch: true
     #theme: gruvbox-light
@@ -8,9 +9,9 @@ template:
     bootswatch: united #materia 
     #pkgdown-nav-height: 90px
     #font-size-base: 1.0rem  # Controls main body text
-    #h1-font-size: 2.0rem    # Controls specific headers
+    #h1-font-size: 3.0rem    # Controls specific headers
     # 3. Ensures line height remains proportional to the smaller text
-    code-font-size: 0.8rem # Controls code blocks
+    code-font-size: 1.0rem # Controls code blocks
 
 navbar:
   structure:
@@ -21,19 +22,19 @@ navbar:
     intro:
       text: Get Started
       menu:
-        - text: "intro to model build"
+        - text: "Two Arm RCT, BHM, NUTS Sampling"
           href: articles/intro_model_build.html
-        - text: "normal respose"
+        - text: "Gaussian Regression (draft)"
           href: articles/intro_normal_tf_stan.html
-        - text: "Negative binomial"
+        - text: "Negative Binomial Regression (draft)"
           href: articles/intro_neg_bin_tfp_stan.html
     advanced:
       text: Bayesian Case Studies 
       menu:
-        - text: "basket and stan"
+        - text: "basket and stan (draft)"
           href: articles/adv_basket_stan.html
     other:
       text: Machine Learning 
       menu: 
-        - text: "Graphical Neural Network"
+        - text: "Graphical Neural Network (draft)"
           href: articles/other_tf_gnn_example.html    

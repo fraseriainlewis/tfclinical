@@ -6,7 +6,7 @@ output:
     toc_depth: 2
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Basic Model Building  - Basket trial}
+  %\VignetteIndexEntry{Adv (placeholder) - Basket trial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
