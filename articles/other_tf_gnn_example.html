@@ -11,7 +11,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -37,21 +43,21 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get Started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
-<li><a class="dropdown-item" href="../articles/intro_model_build.html">intro to model build</a></li>
-    <li><a class="dropdown-item" href="../articles/intro_normal_tf_stan.html">normal respose</a></li>
-    <li><a class="dropdown-item" href="../articles/intro_neg_bin_tfp_stan.html">Negative binomial</a></li>
+<li><a class="dropdown-item" href="../articles/intro_model_build.html">Two Arm RCT, BHM, NUTS Sampling</a></li>
+    <li><a class="dropdown-item" href="../articles/intro_normal_tf_stan.html">Gaussian Regression (draft)</a></li>
+    <li><a class="dropdown-item" href="../articles/intro_neg_bin_tfp_stan.html">Negative Binomial Regression (draft)</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-bayesian-case-studies" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Bayesian Case Studies</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-bayesian-case-studies">
-<li><a class="dropdown-item" href="../articles/adv_basket_stan.html">basket and stan</a></li>
+<li><a class="dropdown-item" href="../articles/adv_basket_stan.html">basket and stan (draft)</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-machine-learning" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Machine Learning</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-machine-learning">
-<li><a class="dropdown-item" href="../articles/other_tf_gnn_example.html">Graphical Neural Network</a></li>
+<li><a class="dropdown-item" href="../articles/other_tf_gnn_example.html">Graphical Neural Network (draft)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>

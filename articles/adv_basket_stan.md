@@ -44,17 +44,14 @@ statisticians.
 The model implemented here is a into TPF code is the following
 non-centered parameterization for a logistic model.
 
-$$\begin{aligned}
-\mu_{0} & {\sim \text{Normal}(0,2.5)} \\
-\sigma_{0} & {\sim \text{Half-Normal}(0,2.5)} \\
-\mu_{1} & {\sim \text{Normal}(0,2.5)} \\
-\sigma_{1} & {\sim \text{Half-Normal}(0,2.5)} \\
-{\widetilde{\theta}}_{j} & {\sim \text{Normal}(0,1)\quad\mspace{9mu}\text{for}\mspace{9mu}{j = 1,2}} \\
-\beta_{0} & {= \mu_{0} + \sigma_{0}{\widetilde{\theta}}_{1}} \\
-\beta_{1} & {= \mu_{1} + \sigma_{1}{\widetilde{\theta}}_{2}} \\
-{\text{logit(}p_{i})} & {= \beta_{0} + \beta_{1}z_{i}\quad\quad\mspace{9mu}\mspace{9mu}\text{for}\mspace{9mu}{i = 1,\ldots,N}} \\
-y_{i} & {\sim \text{Bernoulli}\left( p_{i} \right)}
-\end{aligned}$$
+\\ \begin{aligned} \mu_0 &\sim \text{Normal}(0, 2.5)\\ \sigma_0 &\sim
+\text{Half-Normal}(0, 2.5) \\ \mu_1 &\sim \text{Normal}(0, 2.5) \\
+\sigma_1 &\sim \text{Half-Normal}(0, 2.5) \\ \tilde{\theta}\_j &\sim
+\text{Normal}(0, 1)\quad\enspace\text{for}\enspace{j=1,2} \\ \beta_0 &=
+\mu_0 + \sigma_0 \tilde{\theta}\_1 \\ \beta_1 &= \mu_1 + \sigma_1
+\tilde{\theta}\_2 \\ \text{logit(}{p_i}) &= \beta_0 + \beta_1
+z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N} \\ y_i
+&\sim \text{Bernoulli}(p_i) \end{aligned} \\
 
 ## Make data available to TFP models
 

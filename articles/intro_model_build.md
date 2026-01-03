@@ -1,4 +1,4 @@
-# Basic Model Building - Basket trial
+# Two-arm trial with NUTS Sampling
 
 ## Quick start
 
@@ -44,17 +44,14 @@ statisticians.
 The model implemented here is a into TPF code is the following
 non-centered parameterization for a logistic model.
 
-$$\begin{aligned}
-\mu_{0} & {\sim \text{Normal}(0,2.5)} \\
-\sigma_{0} & {\sim \text{Half-Normal}(0,2.5)} \\
-\mu_{1} & {\sim \text{Normal}(0,2.5)} \\
-\sigma_{1} & {\sim \text{Half-Normal}(0,2.5)} \\
-{\widetilde{\theta}}_{j} & {\sim \text{Normal}(0,1)\quad\mspace{9mu}\text{for}\mspace{9mu}{j = 1,2}} \\
-\beta_{0} & {= \mu_{0} + \sigma_{0}{\widetilde{\theta}}_{1}} \\
-\beta_{1} & {= \mu_{1} + \sigma_{1}{\widetilde{\theta}}_{2}} \\
-{\text{logit(}p_{i})} & {= \beta_{0} + \beta_{1}z_{i}\quad\quad\mspace{9mu}\mspace{9mu}\text{for}\mspace{9mu}{i = 1,\ldots,N}} \\
-y_{i} & {\sim \text{Bernoulli}\left( p_{i} \right)}
-\end{aligned}$$
+\\ \begin{aligned} \mu_0 &\sim \text{Normal}(0, 2.5)\\ \sigma_0 &\sim
+\text{Half-Normal}(0, 2.5) \\ \mu_1 &\sim \text{Normal}(0, 2.5) \\
+\sigma_1 &\sim \text{Half-Normal}(0, 2.5) \\ \tilde{\theta}\_j &\sim
+\text{Normal}(0, 1)\quad\enspace\text{for}\enspace{j=1,2} \\ \beta_0 &=
+\mu_0 + \sigma_0 \tilde{\theta}\_1 \\ \beta_1 &= \mu_1 + \sigma_1
+\tilde{\theta}\_2 \\ \text{logit(}{p_i}) &= \beta_0 + \beta_1
+z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N} \\ y_i
+&\sim \text{Bernoulli}(p_i) \end{aligned} \\
 
 ## Make data available to TFP models
 
@@ -153,7 +150,7 @@ z_vec=tf.convert_to_tensor(thedata.iloc[:,2], dtype = tf.float32)
 #print(f"y={z_vec}") #if using locally this prints out to R console
 ```
 
-## Define the Probability Model
+## Defining the Model
 
 We now fully define our model, i.e., the data likelihood and all the
 prior densities. We use a TFP function called
@@ -251,4 +248,215 @@ mylogp=log_prob_fn(mysample[0], mysample[1], mysample[2],mysample[3], mysample[4
 print(py$mylogp)
 ```
 
-![](precomputed/vg1_text2.png)
+![](precomputed/vg1_text2.png) \## Setup the MCMC Sampler TPF generally
+has a lower level inference to MCMC sampler routines than compared to
+Stan, and as such requires a few more manual steps. There are also a
+range of different ways to setup the samplers. The API is evolving so
+that higher level functions are steadily being introduced.
+
+### NUTS and Adaptive-Step Size
+
+We use here a No-u-turn sampler, and add into this with dual step size
+adaptation for efficiency. To set this up we need to do the following:
+
+- Define the bijectors needed for each parameter in the model (as NUTS
+  requires unconstrained mappings)
+- Define tensors in a specific way such that we allow:
+  - each parameter to have it’s own step size adaptation
+  - additionally allow this tuning to be done independently for each
+    chain
+
+The following code sets this up. The precise tensor structure needed can
+require some trial and error. It has to be carefully specified as the
+structure tells TF how to arrange the calculations, both in terms of
+computational efficiency (parallelization wherever possible) and also at
+what level (parameter, chain, parameter\*chain) to perform step size
+adaptation.
+
+``` python
+# bijectors which define the mapping from **unconstrained space to target space**
+# i.e. Exp() is used for scale as this maps R -> R+
+unconstraining_bijectors = [
+    tfb.Identity(),  # mu0
+    tfb.Exp(),       # sigma0
+    tfb.Identity(),  # mu1
+    tfb.Exp(),       # sigma0
+    tfb.Identity()  # log_odd_control_and_ratio - this is a vector parameter
+]
+
+## Adaptive step size.
+## Do in two parts, first a structure to allow step size to adapt separately for
+## each parameter
+steps=[tf.constant([0.5]),                # mu0
+        tf.constant([0.05]),              # sigma0
+        tf.constant([0.5]),               # mu1
+        tf.constant([0.05]),              # sigma1
+        tf.constant([[0.5,0.5]]) # log_odd_control_and_ratio
+                                 # NOTE - vector and must have correct shape
+        ]
+
+## now we replicate the above "steps" array into a structure where this is
+## repeated inside each chain
+n_chains=2 ## THIS SETS NUMBER OF CHAINS 
+steps_chains = [tf.expand_dims(tf.repeat(steps[0],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[1],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[2],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(steps[3],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.tile(steps[4],[n_chains,1]),axis=1) # starts with shape (1,2) i.e. [[a, b]]
+                 ]
+                 
+```
+
+``` r
+print(py$steps_chains)
+```
+
+![](precomputed/vg1_text3.png)
+
+### NUTS definition
+
+Now define the NUTS sampler, which needs several steps: - define the
+parameters to the NUTS sampler, - then wrap this inside the
+TransformedTransitionKernel which tells NUTS what transformations
+(bijectors - as defined above) to use - then wrap the NUTS and
+TransformedTransitionKernel inside the adaptive step size routine
+
+``` python
+num_results=1000 # number of steps to run each chain for AFTER burn-in
+num_burnin_steps=100 # this is discarded (currently not other option in TPF)
+
+mysampler=tfp.mcmc.NoUTurnSampler(
+                                     target_log_prob_fn=log_prob_fn,
+                                     max_tree_depth=15, # default is 10
+                                     max_energy_diff=1000.0, # default do not change
+                                     step_size=steps_chains
+                                     )
+                          
+sampler = tfp.mcmc.TransformedTransitionKernel( # inside this the starting conditions must be on 
+                                                # original scale i.e. precisions must be >0
+    mysampler,
+    bijector=unconstraining_bijectors
+    )
+
+## define final sampler - NUTS, bijectors and adaptation
+adaptive_sampler = tfp.mcmc.DualAveragingStepSizeAdaptation(
+    inner_kernel=sampler,
+    num_adaptation_steps=int(0.8 * num_burnin_steps),
+    reduce_fn=tfp.math.reduce_logmeanexp, # default - this determines how to change the step 
+                                          # adaptation across chains
+    #reduce_fn=tfp.math.reduce_log_harmonic_mean_exp, # might be better if difficult chains
+    target_accept_prob=tf.cast(0.95, tf.float32)) # this is a key parameter to get good mixing
+```
+
+## Define starting point for chains
+
+Explicit initial conditions are needed for each parameter in each chain.
+This is currently done very simply via hard coding. See Stan manual for
+a fairly simple way to generate random conditions that often works well.
+The key point here is that the initial conditions must be again in a
+strict tensor structure.
+
+``` python
+istate=[tf.constant([0.0]),
+        tf.constant([0.5]),
+                   tf.constant([0.0]),
+        tf.constant([0.5]),
+        tf.constant([[1.,-1.]])]
+
+current_state = [tf.expand_dims(tf.repeat(istate[0],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[1],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[2],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.repeat(istate[3],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
+                 tf.expand_dims(tf.tile(istate[4],[n_chains,1]),axis=1) # starts with shape (1,2) i.e. [[a, b]]
+                 ]
+print(current_state)
+```
+
+``` r
+print(py$current_state)
+```
+
+![](precomputed/vg1_text4.png) \## Perform MCMC Sampling We are now in a
+position to actually sample from our model, but first we will set up a
+tracer function which is called at every step. This can be used either
+for diagnostics, such as monitor step-size changes, or else to generate
+custom output, such as compute loglikelihood at each step. Such a
+function can be computationally expensive and so it’s a trade-off as to
+whether to wait until the samples have been generated to compute
+additional functions of the parameters of interest.
+
+``` python
+def trace_fn(state, pkr):
+    return {
+        'sample': state, # this is also pkr['all'][0].transformed_state[0]
+        'step_size': pkr.new_step_size,  # <--- THIS extracts the adapted step size
+        'all': pkr, #state is also pkr['all'][0].transformed_state[0]
+        #pkr is a named tuple with ._fields = ('transformed_state', 'inner_results')
+        # 'transformed_state is the state
+        # 'inner_results' is diagnostics
+        # ('target_log_prob', 'grads_target_log_prob', 'step_size', 'log_accept_ratio', 'leapfrogs_taken',                     'is_accepted', 'reach_max_depth', 'has_divergence', 'energy', 'seed')
+        'has_divergence':pkr[0].inner_results.has_divergence,
+        'logL': log_prob_fn(state[0], state[1],state[2],state[3],state[4])
+    }
+```
+
+Now run the actual sampler. The number of steps and burn-in were defined
+above when we setup the NUTS sampler.
+
+``` python
+# Speed up sampling by tracing with `tf.function`.
+@tf.function(autograph=False, jit_compile=True,reduce_retracing=True)
+def do_sampling():
+  return tfp.mcmc.sample_chain(
+      kernel=adaptive_sampler,
+      current_state=current_state,
+      num_results=num_results,
+      num_burnin_steps=num_burnin_steps,
+      seed= tf.constant([9999, 9999], dtype=tf.int32), # this is random seed
+      trace_fn=trace_fn)
+
+
+t0 = time.time()
+#samples, kernel_results = do_sampling()
+samples, traceout = do_sampling()
+#res = do_sampling()
+#[mu0, sigma0, mu1, sigma1,log_odds_control_and_ratio], results = do_sampling() 
+t1 = time.time()
+print("Inference ran in {:.2f}s.".format(t1-t0))
+
+## there is a trailing dimension of 1 so need to squeeze to get each col is chain, and each row is parameter sample
+samplesflat = list(map(lambda x: tf.squeeze(x).numpy(), samples))
+print(f" means for mu0, sigma0, mu1, sigma1\n")
+themeans=[np.mean(row) for row in samplesflat[0:4]]
+```
+
+``` r
+names(py$themeans)<-c("mu0","sigma0","mu1","sigma1")
+print(py$themeans)
+```
+
+![](precomputed/vg1_text5.png)
+
+``` python
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 5))
+plt.plot(tf.squeeze(traceout['logL'].numpy()))
+plt.title("log likelihood")
+plt.savefig(f"precomputed/vg1_loglike.png")
+plt.show()
+```
+
+![](precomputed/vg1_loglike.png)
+
+``` python
+fig, axes = plt.subplots(2, 2)#, sharex='col', sharey='col')
+fig.set_size_inches(10, 5)
+axes[0][0].plot(samplesflat[0]) # mu_b
+axes[0][1].plot(samplesflat[1]) # tau_b
+axes[1][0].plot(samplesflat[2]) # mu
+axes[1][1].plot(samplesflat[3]) # tau
+plt.savefig(f"precomputed/vg1_traces.png")
+plt.show()
+```
+
+![](precomputed/vg1_traces.png)

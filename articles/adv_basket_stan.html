@@ -11,7 +11,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -37,21 +43,21 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-get-started" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Get Started</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-get-started">
-<li><a class="dropdown-item" href="../articles/intro_model_build.html">intro to model build</a></li>
-    <li><a class="dropdown-item" href="../articles/intro_normal_tf_stan.html">normal respose</a></li>
-    <li><a class="dropdown-item" href="../articles/intro_neg_bin_tfp_stan.html">Negative binomial</a></li>
+<li><a class="dropdown-item" href="../articles/intro_model_build.html">Two Arm RCT, BHM, NUTS Sampling</a></li>
+    <li><a class="dropdown-item" href="../articles/intro_normal_tf_stan.html">Gaussian Regression (draft)</a></li>
+    <li><a class="dropdown-item" href="../articles/intro_neg_bin_tfp_stan.html">Negative Binomial Regression (draft)</a></li>
   </ul>
 </li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-bayesian-case-studies" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Bayesian Case Studies</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-bayesian-case-studies">
-<li><a class="dropdown-item" href="../articles/adv_basket_stan.html">basket and stan</a></li>
+<li><a class="dropdown-item" href="../articles/adv_basket_stan.html">basket and stan (draft)</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-machine-learning" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Machine Learning</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-machine-learning">
-<li><a class="dropdown-item" href="../articles/other_tf_gnn_example.html">Graphical Neural Network</a></li>
+<li><a class="dropdown-item" href="../articles/other_tf_gnn_example.html">Graphical Neural Network (draft)</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -130,19 +136,21 @@ statisticians.</p>
 </h3>
 <p>The model implemented here is a into TPF code is the following
 non-centered parameterization for a logistic model.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>μ</mi><mn>0</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>2.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>σ</mi><mn>0</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Half-Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>2.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>μ</mi><mn>1</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>2.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>σ</mi><mn>1</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Half-Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>2.5</mn><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mover><mi>θ</mi><mo accent="true">̃</mo></mover><mi>j</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Normal</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mspace width="0.5em"></mspace><mtext mathvariant="normal">for</mtext><mspace width="0.5em"></mspace><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>β</mi><mn>0</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>μ</mi><mn>0</mn></msub><mo>+</mo><msub><mi>σ</mi><mn>0</mn></msub><msub><mover><mi>θ</mi><mo accent="true">̃</mo></mover><mn>1</mn></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>β</mi><mn>1</mn></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>μ</mi><mn>1</mn></msub><mo>+</mo><msub><mi>σ</mi><mn>1</mn></msub><msub><mover><mi>θ</mi><mo accent="true">̃</mo></mover><mn>2</mn></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mtext mathvariant="normal">logit(</mtext><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><msub><mi>z</mi><mi>i</mi></msub><mspace width="1.0em"></mspace><mspace width="1.0em"></mspace><mspace width="0.5em"></mspace><mspace width="0.5em"></mspace><mtext mathvariant="normal">for</mtext><mspace width="0.5em"></mspace><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>y</mi><mi>i</mi></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mtext mathvariant="normal">Bernoulli</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+<p><span class="math display">\[
 \begin{aligned}
 \mu_0 &amp;\sim \text{Normal}(0, 2.5)\\
 \sigma_0 &amp;\sim \text{Half-Normal}(0, 2.5) \\
 \mu_1 &amp;\sim \text{Normal}(0, 2.5) \\
 \sigma_1 &amp;\sim \text{Half-Normal}(0, 2.5) \\
-\tilde{\theta}_j &amp;\sim \text{Normal}(0, 1)\quad\enspace\text{for}\enspace{j=1,2}  \\
+\tilde{\theta}_j &amp;\sim \text{Normal}(0,
+1)\quad\enspace\text{for}\enspace{j=1,2}  \\
 \beta_0 &amp;= \mu_0 + \sigma_0 \tilde{\theta}_1 \\
 \beta_1 &amp;= \mu_1 + \sigma_1 \tilde{\theta}_2 \\
-\text{logit(}{p_i}) &amp;= \beta_0 + \beta_1 z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N}  \\
+\text{logit(}{p_i}) &amp;= \beta_0 + \beta_1
+z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N}  \\
 y_i &amp;\sim \text{Bernoulli}(p_i)
 \end{aligned}
-</annotation></semantics></math></p>
+\]</span></p>
 </div>
 </div>
 <div class="section level2">
