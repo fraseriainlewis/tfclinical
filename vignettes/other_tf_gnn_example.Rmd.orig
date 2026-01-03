@@ -3,6 +3,7 @@ title: "tf_gnn_example"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
   %\VignetteIndexEntry{tf_gnn_example}

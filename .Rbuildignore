@@ -7,3 +7,7 @@
 ^index\.md$
 ^ignore_me_wip$
 ^vignettes/intro_to_tfp\.orig\.Rmd$
+^vignettes/_neg_bin_tfp_stan\.orig\.Rmd$
+^vignettes/_normal_tfp_stan\.orig\.Rmd$
+^vignettes/_tf_gnn_example\.orig\.Rmd$
+^vignettes/_intro_to_tfp\.orig\.Rmd$

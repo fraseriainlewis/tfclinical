@@ -12,6 +12,28 @@ template:
     # 3. Ensures line height remains proportional to the smaller text
     code-font-size: 0.8rem # Controls code blocks
 
-build:
-  exclude: ["vignettes/intro_to_tfp.orig.Rmd"]
-
+navbar:
+  structure:
+    left:  [home, intro, advanced, other, reference, news]
+    right: [github,search]
+  
+  components:
+    intro:
+      text: Get Started
+      menu:
+        - text: "intro to model build"
+          href: articles/intro_model_build.html
+        - text: "normal respose"
+          href: articles/intro_normal_tf_stan.html
+        - text: "Negative binomial"
+          href: articles/intro_neg_bin_tfp_stan.html
+    advanced:
+      text: Bayesian Case Studies 
+      menu:
+        - text: "basket and stan"
+          href: articles/adv_basket_stan.html
+    other:
+      text: Machine Learning 
+      menu: 
+        - text: "Graphical Neural Network"
+          href: articles/other_tf_gnn_example.html    

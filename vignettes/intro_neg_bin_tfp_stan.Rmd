@@ -3,6 +3,7 @@ title: "neg_bin_tfp_stan"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
   %\VignetteIndexEntry{neg_bin_tfp_stan}
@@ -25,7 +26,7 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r rsetup, include=FALSE}
+```{r rsetup, include=FALSE,eval=FALSE}
 #library(tfclinical)
 library(rstanarm)
 library(tfprobability)
@@ -199,7 +200,7 @@ plot(phi_m[,3],type="l",col="skyblue",main="Trace plots - chain 3")
 dev.off()
 ```
 
-```{r vg1_table2, include=TRUE,echo=FALSE, fig.align="center"}
+```{r vg1_table2, include=TRUE,echo=FALSE, fig.align="center",eval=TRUE}
 knitr::include_graphics("precomputed/vg2_plot1.png")
 ```
 
@@ -238,7 +239,7 @@ dev.off()
 ```
 
 
-```{r vg2_plot23, include=TRUE,echo=FALSE, fig.align="center"}
+```{r vg2_plot23, include=TRUE,echo=FALSE, fig.align="center",eval=TRUE}
 knitr::include_graphics("precomputed/vg2_plot2.png")
 knitr::include_graphics("precomputed/vg2_plot3.png")
 ```

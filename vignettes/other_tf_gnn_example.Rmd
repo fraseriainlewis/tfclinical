@@ -3,13 +3,13 @@ title: "tf_gnn_example"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
   %\VignetteIndexEntry{tf_gnn_example}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -40,9 +40,9 @@ options(device = function(...) ragg::agg_png(...))
 
 
 ## Graphical Neural Network Model
-this requires a custom python venv setup to ensure correct version compatibility. See installation guide under advanced. 
+Graphical Neural Networks are increasingly finding application in drug development beyond their historical major use case of prediction and classification of new potential drug molecules. Newer applications include extending to electronic patient records for prediction of future disease outcomes.
 
-This example is ported from the [original on Tensorflow GNN github site](https://colab.research.google.com/github/tensorflow/gnn/blob/master/examples/notebooks/intro_mutag_example.ipynb)
+This example is ported from the [original on Tensorflow GNN github site](https://colab.research.google.com/github/tensorflow/gnn/blob/master/examples/notebooks/intro_mutag_example.ipynb). Unlike other vignettes, a custom Python setup is required here for reticulate so as ensure correct version compatibility of tensorflow and tensorflow-gnn. See installation guide under advanced. 
 
 Needs compatible versions (installed via pip in venv hard coding versions):
 
@@ -56,7 +56,8 @@ Needs compatible versions (installed via pip in venv hard coding versions):
 
 
 
-```{python chunkpy1,include=TRUE,echo=TRUE,eval=FALSE}
+
+```{python chunkpy1,include=TRUE, echo=TRUE,eval=FALSE}
 import os
 os.environ["TF_USE_LEGACY_KERAS"] = "1"  # For TF2.16+.
 
@@ -181,11 +182,7 @@ g.edge_sets['bonds'].features[tfgnn.HIDDEN_STATE]
 y
 ```
 
-```{r textout}
-
-```
-
-```{python alltherest,include=FALSE,echo=TRUE,eval=FALSE}
+```{python alltherest,include=FALSE,echo=TRUE, eval=FALSE}
 batch_size = 32
 train_ds_batched = train_ds.batch(batch_size=batch_size).repeat()
 val_ds_batched = val_ds.batch(batch_size=batch_size)
@@ -337,7 +334,7 @@ history = model.fit(train_ds_batched,
 ```
 
 
-```{python, dev="png",eval=FALSE}
+```{python, dev="png", eval=FALSE}
 #for k, hist in history.history.items():
 #  plt.plot(hist)
 #  plt.title(k)
@@ -363,7 +360,7 @@ for k, hist in history.history.items():
 ```
 
 ## the end
-```{r vg3_plot2, include=TRUE,echo=FALSE, fig.align="center"}
+```{r vg3_plot2, include=TRUE,echo=FALSE, fig.align="center", eval=TRUE}
 knitr::include_graphics("precomputed/pyplot_loss.png")
 knitr::include_graphics("precomputed/pyplot_val_loss.png")
 ```

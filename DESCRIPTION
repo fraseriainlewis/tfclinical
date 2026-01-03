@@ -27,6 +27,7 @@ Imports:
 Encoding: UTF-8
 LazyData: true
 URL: https://fraseriainlewis.github.io/tfclinical/
+BugReports: https://github.com/fraseriainlewis/tfclinical/issues
 VignetteBuilder: knitr
 RoxygenNote: 7.3.3
 Suggests: 

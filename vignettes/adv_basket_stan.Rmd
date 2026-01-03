@@ -1,11 +1,12 @@
 ---
-title: "Bayesian model building walkthrough 1"
-output: 
+title: "Adv (placeholder) - Basket trial"
+output:
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Bayesian model building walkthrough 1}
+  %\VignetteIndexEntry{Basic Model Building  - Basket trial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,12 +25,43 @@ knitr::opts_chunk$set(
 #knitr::opts_chunk$set(eval = !on_github)
 
 ```
-## 1. Overview
+## Quick start
+This vignettes shows: 
 
-This vignette shows some of the key building blocks in building a Bayesian model in TFP. It uses a mixture of R and Python Rmarkdown cells. R is used for data set creation and generation of figures, and Python for model building in TFP. This is a general theme of the vignettes; Python is used when direct interaction with the TFP API is needed, otherwise R is used as the assumed go-to language of choice for statisticians. 
+  - how to easily pass data sets from R to TFP (Python)
+  - how to build a simple hierarchical Bayesian model 
+     - setup the priors
+     - define the log-likelihood
+  - how to generate samples from the model
+  - how to write a function to compute the log_posterior (needed for MCMC sampling)
+   
+The model used here is for a two arm clinical trial and is written such that it can readily be expanded to multiple sets of arms (basket trial). 
 
-### 1.1 Example Model - Formulation
-The model implemented here into TPF code is the following $\mbox{logit}(\theta)$ - TBC. Also include non-centered parmeterization.
+## Overview
+This vignette shows some of the key building blocks in building a Bayesian hierarchical (HM) model in TFP. The model considered is for a basket trial design - a clinical trial where the same drug is used to treat different indications within the same master protocol. Using Bayesian HM approach some pooling/borrowing is possible between baskets to help improve the power of detecting true treatment differences. 
+
+Technically the model used in this vignette is not a basket trial because it only contains one basket, and so is a conventional two arm test v control trial. We are referring to it as a basket trial as the code is structured such that additional baskets can be easily added (see later vignettes). Only one basket is used to keep this as simple as possible to allow focus for now on the TPF building modelling blocks.   
+
+
+This vignette shows some of the key building blocks in building a Bayesian model in TFP. It uses a mixture of R and Python Rmarkdown cells. R is used for data set creation and generation of figures, and Python for model building in TFP. This is a general theme of the vignettes; Python is used when direct interaction with the TFP API is needed, otherwise R is used as the assumed go-to language of choice for statisticians.
+
+### Example Model - Formulation
+The model implemented here is a into TPF code is the following non-centered parameterization for a logistic model.
+
+$$
+\begin{aligned}
+\mu_0 &\sim \text{Normal}(0, 2.5)\\
+\sigma_0 &\sim \text{Half-Normal}(0, 2.5) \\
+\mu_1 &\sim \text{Normal}(0, 2.5) \\
+\sigma_1 &\sim \text{Half-Normal}(0, 2.5) \\
+\tilde{\theta}_j &\sim \text{Normal}(0, 1)\quad\enspace\text{for}\enspace{j=1,2}  \\
+\beta_0 &= \mu_0 + \sigma_0 \tilde{\theta}_1 \\
+\beta_1 &= \mu_1 + \sigma_1 \tilde{\theta}_2 \\
+\text{logit(}{p_i}) &= \beta_0 + \beta_1 z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N}  \\
+y_i &\sim \text{Bernoulli}(p_i)
+\end{aligned}
+$$
+
 
 ```{r rsetup, include=FALSE}
 #library(tfclinical)
@@ -38,22 +70,22 @@ library(reticulate)
 library(kableExtra)
 #reticulate::py_install("bash") # just a test
 ```
-## 2. Make data available to TFP models
+## Make data available to TFP models
 Assuming the data to be modelled, i.e. the source data from which parameters are to be estimates via model fitting, are loaded into R or generated in R then a first step is to make these data available to TFP. This functionality is readily provided by [reticulate](https://rstudio.github.io/reticulate/), with one watchout - the Python `pandas` library is required to deal with data.frames (see installation instructions - pandas can be included as part of Rstudio's tfprobability install script).
 
-In TF and TPF models are written in Python but they use TF tensors as arguments, rather than more familiar Python structures such as numpy arrays. This distinction is important as tensors are strongly typed and so care is needed, including when moving back and forth to R via reticulate. 
+In TF and TPF models are written in Python but they use TF tensors as arguments, rather than more familiar Python structures such as numpy arrays. This distinction is important as tensors are strongly typed and so care is needed, including when moving back and forth to R via reticulate.
 
-### 2.1 Example data set
+### Example data set
 The R chunk below creates a simple dataset of three cols:
 
- - a binary response variable (0/1 = non-responder/responder), 
- - a binary treatment variable (0/1 = control/test treatment) 
+ - a binary response variable (0/1 = non-responder/responder),
+ - a binary treatment variable (0/1 = control/test treatment)
  - and a basket ID variable. (1)
 
-The basket ID is currently set fixed 1, denoting there is only one basket in this trial, i.e. a classical two arm randomized trial design. Baskets will be added in other vignettes. 
+The basket ID is currently set fixed 1, denoting there is only one basket in this trial, i.e. a classical two arm randomized trial design. Baskets will be added in other vignettes.
 
 
-```{r datasets, include=TRUE,eval=FALSE}
+```{r datasets, include=TRUE,echo=TRUE,eval=FALSE}
 ### Prepare model inputs
 set.seed(9999)
 # Set up data
@@ -79,7 +111,7 @@ for(i in 1:K){ # for each basket repeat 0-control 1-trt according to the specifc
 
 thedata<-data.frame(y,basketID=k_vec,Treatment=z_vec)
 
-py$thedata<-r_to_py(thedata) # THE KEY LINE - makes data available to Python 
+py$thedata<-r_to_py(thedata) # THE KEY LINE - makes data available to Python
                              # this is converted into a pandas dataframe object in Python
 ```
 
@@ -99,7 +131,7 @@ saved_table1 <- readRDS("precomputed/table1.rds")
 saved_table1
 ```
 
-## 3. Setup python and get data from R
+## Setup python and get data from R
 We first load in the necessary libraries for TFP and then convert the dataset passed from R into tensors. Note that as tensors are strongly typed we explicitly define the storage type.
 ```{python pysetup,include=TRUE,eval=FALSE}
 import numpy as np
@@ -114,8 +146,8 @@ import warnings
 import time
 import sys
 
-## The data.frame passed is now a panda df but for TPF this needs to be further 
-## converted into tensors here we simply convert each col of the data.frame into 
+## The data.frame passed is now a panda df but for TPF this needs to be further
+## converted into tensors here we simply convert each col of the data.frame into
 ## a Rank 1 tensor (i.e. a vector)
 y_data=tf.convert_to_tensor(thedata.iloc[:,0], dtype = tf.float32)
 k_vec=tf.convert_to_tensor(thedata.iloc[:,1], dtype = tf.float32)
@@ -124,24 +156,24 @@ z_vec=tf.convert_to_tensor(thedata.iloc[:,2], dtype = tf.float32)
 #print(f"y={z_vec}") #if using locally this prints out to R console
 ```
 
-## 4. Define the Probability Model
+## Define the Probability Model
 We now fully define our model, i.e., the data likelihood and all the prior densities. We use a TFP function called JointDistributionSequentialAutoBatched. The are a number of alternative TFP functions for defining Bayesian models. This is one of the simplest but still capable of defining complex models. The model definition in JointDistributionSequentialAutoBatched **must follow a strict convention** which is explained in the comments.
 
 As above the model formulation here uses a non-centered approach to aim with MCMC estimation as discussed in the stan manual [here](https://mc-stan.org/learn-stan/case-studies/divergences_and_bias.html).
 
-### 4.1 Define the likelihood
+### Define the likelihood
 ```{python definelogL,include=TRUE,eval=FALSE}
 # Define LIKELIHOOD - this is defined first, as functions need defined before used
-# The arguments in our function are in the REVERSE ORDER that the parameters 
+# The arguments in our function are in the REVERSE ORDER that the parameters
 # appear in JointDistrbutionSequential this is essential
 def make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):
     # beta is a two element tensor, beta[0] parameter for the log odds of the control arm effect
     #                               beta[1] log odds ratio of treatment to control
-    beta=tf.stack([mu0 + sigma0 * log_odd_control_and_ratio[0],         
+    beta=tf.stack([mu0 + sigma0 * log_odd_control_and_ratio[0],
                    mu1 + sigma1 * log_odd_control_and_ratio[1]])
                    #tf.stack is used to stack tensors without creating new tensors
-                   
-    # return a vector of Bernoulli probabilities, one for each patient, and these estimates 
+
+    # return a vector of Bernoulli probabilities, one for each patient, and these estimates
     # dependent on which arm the patient was randomized to, i.e. two unique values
     return(tfd.Independent(
         tfd.Bernoulli(logits=beta[0]+beta[1]*z_vec), #define as logits
@@ -149,57 +181,57 @@ def make_observed_dist(log_odd_control_and_ratio,sigma1, mu1,sigma0,mu0):
                                       # equal to sum of individual log_probs, a vector
                                       # this is usual when defining a data likelihood
     ))
-```    
+```
 
-### 4.2 Define the full model
-This is straightforward provided it's done in sequence. Care is needed in understanding whether parameters are scalars or vectors, especially in more complex models which feature a design matrix and matrix algebra. Simulating a realization from the model is a simple way to see what the structure of the *state* variable of the model is. In more complex models simulating multiple values is useful to check the structure is as expected.  
-```{python definejoint,include=TRUE,eval=FALSE}    
-# DEFINE FULL MODEL - hyperparams hard coded     
+### Define the full model
+This is straightforward provided it's done in sequence. Care is needed in understanding whether parameters are scalars or vectors, especially in more complex models which feature a design matrix and matrix algebra. Simulating a realization from the model is a simple way to see what the structure of the *state* variable of the model is. In more complex models simulating multiple values is useful to check the structure is as expected.
+```{python definejoint,include=TRUE,eval=FALSE}
+# DEFINE FULL MODEL - hyperparams hard coded
 # model is y[i] = Bernoulli(p[i]) where logit(p[i]) = intercept + treatment*z[i]
 model = tfd.JointDistributionSequentialAutoBatched([
-  tfd.Normal(loc=0., scale=2.5, name="mu0"),  # prior for mean of control arm log odds 
+  tfd.Normal(loc=0., scale=2.5, name="mu0"),  # prior for mean of control arm log odds
   tfd.HalfNormal(scale=2.5, name="sigma0"),   # prior for sd of control arm log odds
   tfd.Normal(loc=0., scale=2.5, name="mu1"),  # prior for mean of treatment log odds ratio
   tfd.HalfNormal(scale=2.5, name="sigma1"),   # prior for sd of treatment log odds ratio
   # now come to the standard normals resulting from non-centred parameterization
   # define these as vector MVN with identity scale matrix
-  tfd.Normal(loc=tf.zeros(2), scale=tf.ones(2), name="log_odd_control_and_ratio"), 
+  tfd.Normal(loc=tf.zeros(2), scale=tf.ones(2), name="log_odd_control_and_ratio"),
   # now finally define the likelihood as we have already defined parameters in this
   make_observed_dist # the data likelihood defined as a function above
-])   
+])
 
 tf.random.set_seed(9999)
-# Sample one variate from this joint probability model - shows what structure the model 
+# Sample one variate from this joint probability model - shows what structure the model
 # produces/needs. i.e. what the state variable of the model looks like in TF
 mysample=model.sample(1) # 1 = one random variate
 print(f"{mysample}")
 
 ```
 
-```{r sampleout,include=TRUE,echo=TRUE,eval=FALSE,results='hide'}
+```{r sampleout,include=TRUE,echo=TRUE,results='hide',eval=FALSE}
 print(py$mysample)
 
 ```
 
-```{r vg1_table2, include=TRUE,echo=FALSE,out.width="100%", fig.align="center"}
+```{r vg1_table2, include=TRUE,echo=FALSE,out.width="100%", fig.align="center",eval=TRUE}
 knitr::include_graphics("precomputed/vg1_text1.png")
 ```
 
-### 4.3 Define the log_prog_fn
-To use the various MCMC samplers provided in TFP we need to explicitly provide a function which returns the log of the posterior density. This is straightforward and simply involves wrapping around the existing model method log_prob() as seen below. 
-```{python log_prob1,include=TRUE,eval=FALSE}    
+### Define the log_prog_fn
+To use the various MCMC samplers provided in TFP we need to explicitly provide a function which returns the log of the posterior density. This is straightforward and simply involves wrapping around the existing model method log_prob() as seen below.
+```{python log_prob1,include=TRUE,eval=FALSE}
 # the ordering of the arguments in this must match exactly the ordering used in
 # JointDistributionSequentialAutoBatched
 def log_prob_fn(mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio):
   return model.log_prob((
-      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data)) 
-                                                         ## last argument is the DATA (y) 
+      mu0, sigma0, mu1,sigma1, log_odd_control_and_ratio,y_data))
+                                                         ## last argument is the DATA (y)
 
-# useful to see how to call this. We use the simulated values above      
-mylogp=log_prob_fn(mysample[0], mysample[1], mysample[2],mysample[3], mysample[4])     
+# useful to see how to call this. We use the simulated values above
+mylogp=log_prob_fn(mysample[0], mysample[1], mysample[2],mysample[3], mysample[4])
 ```
 
-```{r sampleout2,include=TRUE,echo=TRUE,eval=FALSE,results='hide'}
+```{r sampleout2,include=TRUE,echo=TRUE,results='hide',eval=FALSE}
 print(py$mylogp)
 
 ```

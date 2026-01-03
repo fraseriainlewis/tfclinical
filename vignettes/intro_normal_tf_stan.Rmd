@@ -1,8 +1,9 @@
 ---
 title: "normal_tf_stan"
-output: 
+output:
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
   %\VignetteIndexEntry{normal_tf_stan}
@@ -30,7 +31,7 @@ knitr::opts_chunk$set(
 
 ```
 
-```{r rsetup, include=FALSE, eval=TRUE}
+```{r rsetup, include=FALSE, eval=FALSE}
 #library(tfclinical)
 library(rstanarm)
 library(tfprobability)
@@ -41,13 +42,13 @@ options(mc.cores = parallel::detectCores())
 library(rstan)
 library(ggplot2)
 library(bayesplot)
-library(dplyr) 
+library(dplyr)
 library(zeallot)
 library(purrr)
 #reticulate::py_install("bash") # just a test
 ```
 
-```{r rstanandstan,include=TRUE,echo=TRUE,eval=TRUE}
+```{r rstanandstan,include=TRUE,echo=TRUE, eval=FALSE}
 ################################################################################
 # This file fits a Bayesian linear regression (Gaussian) using public data set.
 #
@@ -219,7 +220,7 @@ res2<-extract(fit,par=c("alpha","beta_wt"," beta_am","phi","intercept_0"))
 
 ```
 
-```{r plots1,include=TRUE, echo=FALSE, eval=TRUE}
+```{r plots1,include=TRUE, echo=FALSE, eval=FALSE}
   png("precomputed/vg3_plot1.png")
   par(mfrow=c(2,2))
   plot(density(res_m[,"(Intercept)"]),col="green")
@@ -239,12 +240,12 @@ res2<-extract(fit,par=c("alpha","beta_wt"," beta_am","phi","intercept_0"))
 ```
 
 
-```{r vg3_plot1, include=TRUE,echo=FALSE, fig.align="center"}
+```{r vg3_plot1, include=TRUE,echo=FALSE, fig.align="center",eval=TRUE}
 knitr::include_graphics("precomputed/vg3_plot1.png")
 ```
 
 
-```{r tfprob,include=TRUE, echo=FALSE, eval=TRUE}
+```{r tfprob,include=TRUE, echo=FALSE, eval=FALSE}
 ################################################################################
 ## Tensorflow - bonus
 
@@ -391,7 +392,7 @@ intercept_0 <- alpha + beta_wt*-mean(mtcars$wt) + beta_am*-mean(mtcars$am);
 
 ```
 
-```{r plots2,include=TRUE, echo=FALSE, eval=TRUE}
+```{r plots2,include=TRUE, echo=FALSE, eval=FALSE}
   png("precomputed/vg3_plot2.png")
 par(mfrow=c(2,2))
 plot(density(res_m[,"(Intercept)"]),col="green")
@@ -413,7 +414,7 @@ dev.off()
 
 ```
 
-```{r vg3_plot2, include=TRUE,echo=FALSE, fig.align="center"}
+```{r vg3_plot2, include=TRUE,echo=FALSE, fig.align="center", eval=TRUE}
 knitr::include_graphics("precomputed/vg3_plot2.png")
 ```
 

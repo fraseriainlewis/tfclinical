@@ -3,6 +3,7 @@ title: "neg_bin_tfp_stan"
 output: 
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 2
     number_sections: true
 vignette: >
   %\VignetteIndexEntry{neg_bin_tfp_stan}
