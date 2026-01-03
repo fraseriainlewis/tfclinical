@@ -3,6 +3,7 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^assets$
 ^\.github$
 ^index\.md$
 ^ignore_me_wip$
