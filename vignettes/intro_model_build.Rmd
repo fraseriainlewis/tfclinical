@@ -37,6 +37,8 @@ This vignettes shows:
    
 The model used here is for a two arm clinical trial and is written such that it can readily be expanded to multiple sets of arms (basket trial). 
 
+The full .Rmd file to generate all the outputs shown here can is [here](fullcode/intro_model_build.Rmd.orig). 
+
 ## Overview
 This vignette shows some of the key building blocks in building a Bayesian hierarchical (HM) model in TFP. The model considered is for a basket trial design - a clinical trial where the same drug is used to treat different indications within the same master protocol. Using Bayesian HM approach some pooling/borrowing is possible between baskets to help improve the power of detecting true treatment differences. 
 
