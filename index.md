@@ -7,15 +7,16 @@ showing how to use [Tensorflow Probability
 and trial simulation for clinical research and drug development
 activities.
 
-## Why Tensorflow Probability?
+## Why Tensorflow Probability (TFP)?
 
-[Tensorflow Probability](https://www.tensorflow.org/probability) (TFP)
-is an alternative to [rstan](https://mc-stan.org/rstan/). Having two
-major open source numerical libraries offering similar functionality
-reduces risk. rstan is the more mature library for Bayesian modelling,
-while TFP being part of Google’s
-[Tensorflow](https://www.tensorflow.org/) framework offers computational
-flexibility (CPU/GPU/TPU).
+- Having alternative options (e.g., to
+  [Stan](https://mc-stan.org/docs/reference-manual/mcmc.html)) when
+  using open source reduces business risk
+- [TFP](https://www.tensorflow.org/probability) is developed and
+  maintained by Google as part of its
+  [Tensorflow](https://www.tensorflow.org/) framework
+- TFP provides a wide variety of building blocks for probabilistic
+  modelling
 
 ## Features
 

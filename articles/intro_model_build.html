@@ -91,23 +91,37 @@
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>This vignettes shows:</p>
+<p>This worked example is for a two arm clinical trial with binary
+endpoint and covers:</p>
 <ul>
-<li>how to easily pass data sets from R to TFP (Python)</li>
-<li>how to build a simple hierarchical Bayesian model
+<li>how to <strong>pass data sets</strong> from R to TFP (Python)</li>
+<li>how to build a simple <strong>hierarchical Bayesian model</strong>
 <ul>
 <li>setup the priors</li>
 <li>define the log-likelihood</li>
+<li>generate samples from this model</li>
+<li>write a function to compute the log_posterior (needed for MCMC
+sampling)</li>
 </ul>
 </li>
-<li>how to generate samples from the model</li>
-<li>how to write a function to compute the log_posterior (needed for
-MCMC sampling)</li>
+<li>how setup a <strong>NUTS MCMC sampler</strong>
+<ul>
+<li>with parameter specific <strong>adaptive step-sizes</strong>
+</li>
+<li><strong>multiple chains</strong></li>
 </ul>
-<p>The model used here is for a two arm clinical trial and is written
-such that it can readily be expanded to multiple sets of arms (basket
-trial).</p>
-<p>The full .Rmd file to generate all the outputs shown here can is <a href="https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd" class="external-link">here</a>.</p>
+</li>
+<li>how to generate samples from the posterior
+<ul>
+<li>including trace functions to compute <strong>in-stream diagnostics
+and custom outputs</strong>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Click <a href="https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd" class="external-link">here</a>
+for the full R Markdown file that generated all the outputs shown
+here</strong>.</p>
 </div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>

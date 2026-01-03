@@ -2,21 +2,27 @@
 
 ## Quick start
 
-This vignettes shows:
+This worked example is for a two arm clinical trial with binary endpoint
+and covers:
 
-- how to easily pass data sets from R to TFP (Python)
-- how to build a simple hierarchical Bayesian model
+- how to **pass data sets** from R to TFP (Python)
+- how to build a simple **hierarchical Bayesian model**
   - setup the priors
   - define the log-likelihood
-- how to generate samples from the model
-- how to write a function to compute the log_posterior (needed for MCMC
-  sampling)
+  - generate samples from this model
+  - write a function to compute the log_posterior (needed for MCMC
+    sampling)
+- how setup a **NUTS MCMC sampler**
+  - with parameter specific **adaptive step-sizes**
+  - **multiple chains**
+- how to generate samples from the posterior
+  - including trace functions to compute **in-stream diagnostics and
+    custom outputs**
 
-The model used here is for a two arm clinical trial and is written such
-that it can readily be expanded to multiple sets of arms (basket trial).
-
-The full .Rmd file to generate all the outputs shown here can is
-[here](https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd).
+**Click
+[here](https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd)
+for the full R Markdown file that generated all the outputs shown
+here**.
 
 ## Overview
 
