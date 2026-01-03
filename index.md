@@ -13,8 +13,10 @@
 This package is a collection of multilingual (R and Python) vignettes showing how to use [Tensorflow Probability (TPF)](https://www.tensorflow.org/probability) in [RStudio](https://posit.co/downloads/). The focus is modelling building and trial simulation for clinical research and drug development activities.
 
 
-## Why Tensorflow Probability? 
-[Tensorflow Probability](https://www.tensorflow.org/probability) (TFP) is an alternative to [rstan](https://mc-stan.org/rstan/). Having two major open source numerical libraries offering similar functionality reduces risk. rstan is the more mature library for Bayesian modelling, while TFP being part of Google's [Tensorflow](https://www.tensorflow.org/) framework offers computational flexibility (CPU/GPU/TPU).      
+## Why Tensorflow Probability (TFP)?
+  - Having alternative options (e.g., to [Stan](https://mc-stan.org/docs/reference-manual/mcmc.html)) when using open source reduces business risk 
+  - [TFP](https://www.tensorflow.org/probability) is developed and maintained by Google as part of its [Tensorflow](https://www.tensorflow.org/) framework 
+  - TFP provides a wide variety of building blocks for probabilistic modelling     
 
 ## Features
 The vignettes range from demonstrating basic step-by-step mechanics of running MCMC in RStudio using TFP, for example how to use **adaptive step sizes** and **multiple chains**, through to complete examples of simulating Bayesian basket trials using TFP and comparing the results against rstan. Most vignettes include a comparison with [rstan](https://mc-stan.org/rstan/).

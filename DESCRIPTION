@@ -1,12 +1,13 @@
 Package: tfclinical
 Type: Package
-Title: What the Package Does (Title Case) - just aaa placeholder
+Title: Tensorflow Probability for Drug Development: A set of Vignettes
 Version: 0.1.0
 Authors@R: c(
     person(
       "Fraser", "Lewis",
       email = "fraser.iain.lewis@gmail.com",
-      role = c("aut", "cre")
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0003-4580-2712")
     )
   )
 Description: A set of vignettes and case studies showing how to utilize Tensorflow Probability in RStudio for clinical research and drug development activities. The vignettes use a mixture of R and Python and include like for like comparisons with rstan. 
