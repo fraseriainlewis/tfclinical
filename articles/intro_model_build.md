@@ -16,7 +16,7 @@ The model used here is for a two arm clinical trial and is written such
 that it can readily be expanded to multiple sets of arms (basket trial).
 
 The full .Rmd file to generate all the outputs shown here can is
-[here](https://fraseriainlewis.github.io/tfclinical/assets/fullcodevignettes/intro_model_build.Rmd.orig).
+[here](https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd).
 
 ## Overview
 
