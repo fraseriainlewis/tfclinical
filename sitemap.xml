@@ -1,10 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://fraseriainlewis.github.io/tfclinical/404.html</loc></url>
+<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/adv_basket_stan.html</loc></url>
 <url><loc>https://fraseriainlewis.github.io/tfclinical/articles/index.html</loc></url>
-<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/intro_to_tfp.html</loc></url>
-<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/neg_bin_tfp_stan.html</loc></url>
-<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/normal_tf_stan.html</loc></url>
-<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/tf_gnn_example.html</loc></url>
+<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/intro_model_build.html</loc></url>
+<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/intro_neg_bin_tfp_stan.html</loc></url>
+<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/intro_normal_tf_stan.html</loc></url>
+<url><loc>https://fraseriainlewis.github.io/tfclinical/articles/other_tf_gnn_example.html</loc></url>
 <url><loc>https://fraseriainlewis.github.io/tfclinical/authors.html</loc></url>
 <url><loc>https://fraseriainlewis.github.io/tfclinical/index.html</loc></url>
 <url><loc>https://fraseriainlewis.github.io/tfclinical/reference/hello.html</loc></url>

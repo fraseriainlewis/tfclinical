@@ -6,6 +6,9 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/fraseriainlewis/tfclinical/blob/main/DESCRIPTION)
+
 Lewis F (2026). *tfclinical: What the Package Does (Title Case) - just
 aaa placeholder*. R package version 0.1.0,
 <https://fraseriainlewis.github.io/tfclinical/>.
