@@ -84,61 +84,76 @@
 <!--  tfclinical
 </h1> -->
 <!-- ::: {style="font-size: 17px;"} this hard codes font size, only way to do it -->
-<p>This package is a collection of heavily documented Rmarkdown vignettes demonstrating how to use <a href="https://www.tensorflow.org/probability" class="external-link">Tensorflow Probability (TPF)</a> in <a href="https://posit.co/downloads/" class="external-link">RStudio</a> for Bayesian inference. <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a> features in many of these for comparison. The application focus is model building and trial simulation for clinical research and drug development activities.</p>
+<p>This package is a collection of heavily documented Rmarkdown vignettes demonstrating how to use <a href="https://www.tensorflow.org/probability" class="external-link">Tensorflow Probability (TFP)</a> in <a href="https://posit.co/downloads/" class="external-link">RStudio</a> for Bayesian inference. <a href="https://mc-stan.org/rstan/" class="external-link">RStan</a> features in many of these for comparison. The application focus is <strong>model building and trial simulation for clinical research and drug development</strong>.</p>
 <div class="section level2">
 <h2 id="why-tensorflow-probability-tfp">Why Tensorflow Probability (TFP)?<a class="anchor" aria-label="anchor" href="#why-tensorflow-probability-tfp"></a>
 </h2>
 <ul>
-<li>Having alternative options (e.g., to <a href="https://mc-stan.org/docs/reference-manual/mcmc.html" class="external-link">Stan</a>) when using open source reduces business risk</li>
+<li>Having alternative options, e.g., to <a href="https://mc-stan.org/rstan/" class="external-link">RStan</a>, when using open source <strong>reduces business risk</strong>
+</li>
 <li>
-<a href="https://www.tensorflow.org/probability" class="external-link">TFP</a> is developed and maintained by Google as part of its <a href="https://www.tensorflow.org/" class="external-link">Tensorflow</a> framework</li>
-<li>TFP provides a wide variety of building blocks for probabilistic modelling</li>
+<a href="https://www.tensorflow.org/probability" class="external-link">TFP</a> is developed and maintained by Google and is available globally</li>
+<li>
+<a href="https://www.tensorflow.org/probability" class="external-link">TFP</a> provides a wide variety of building blocks for probabilistic modelling and ML</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
-</h2>
-<p><a href="https://www.tensorflow.org/probability" class="external-link">TFP</a> is less mature in terms of documentation compared <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a>, in addition to having a Python API rather than R API. The vignettes included here are designed to help RStudio users get up to speed with TFP. Multi-lingual R markdown is used in each vignette to allow the strengths of each of R and Python to be used. There is an R wrapper library for TFP available (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">here</a>).</p>
+<!-- ## Features
+[TFP](https://www.tensorflow.org/probability) is less mature in terms of documentation compared [RStan](https://mc-stan.org/rstan/), in addition to having a Python API rather than R API. The vignettes included here are designed to help RStudio users get up to speed with TFP. Multi-lingual R markdown is used in each vignette to allow the strengths of each of R and Python to be used. There is an R wrapper library for TFP available (see [here](https://rstudio.github.io/tfprobability/index.html)).
+-->
 </div>
 <div class="section level2">
 <h2 id="running-the-vignettes">Running the Vignettes<a class="anchor" aria-label="anchor" href="#running-the-vignettes"></a>
 </h2>
-<p>Due to the computationally intensive nature of the code the vignettes show only pre-computed outputs. Links to the full live vignettes are included at the <a href="https://fraseriainlewis.github.io/tfclinical/">tfclinical website</a>. To run the live vignettes <a href="https://github.com/fraseriainlewis/tfclinical.git" class="external-link">tfclinical</a> needs installed and it has one main dependency <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">tfprobability</a>. The tfprobability library is not directly used but installing this (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">installation instructions</a> ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras’’ option. <!-- ::: other pair from above--></p>
+<p>Links to the raw <strong>.Rmd</strong> files for download and local compilation can be found in each of the vignettes on this site. Local compilation has some dependencies which are given below.</p>
+<div class="section level3">
+<h3 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
+</h3>
+<ul>
+<li>Install the <a href="https://tensorflow.rstudio.com/install/" class="external-link">tensorflow</a> library and its install script must include “pandas” in the <code>extra_packages</code> option (see details below)</li>
+<li>Install <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">tfprobability</a>
+</li>
+<li>Ensure <a href="https://pak.r-lib.org" class="external-link">pak</a> is installed and loaded into session</li>
+<li>then at R Console &gt; <code>pak::pkg_install("fraseriainlewis/tfclinical")</code>
+</li>
+</ul>
+<!-- Due to the computationally intensive nature of the code the vignettes show only pre-computed outputs. Links to the full live vignettes are included at the [tfclinical website](https://fraseriainlewis.github.io/tfclinical/). To run the live vignettes  [tfclinical](https://github.com/fraseriainlewis/tfclinical.git) needs installed and it has one main dependency [tfprobability](https://rstudio.github.io/tfprobability/index.html). The tfprobability library is not used directly but if it is installed and working then this means the essential Python libraries are also installed. There is one exception, in that we also use the Python pandas library and so this should be included in the tensorflow install script (see below) in the ``extras'' option.
+--><!-- ::: other pair from above-->
+</div>
 <div class="section level3">
 <h3 id="installation-details-for-linux">Installation details for Linux<a class="anchor" aria-label="anchor" href="#installation-details-for-linux"></a>
 </h3>
-<p>Python needs to be installed, and pyenv can also be a very useful tool if dealing with multiple Python version and to avoid impacting the system Python installation.</p>
+<p>Python needs to be installed, and pyenv can also be a very useful tool if dealing with multiple Python versions and to avoid impacting the system Python installation.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="do">##########################################################</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># in RStudio Terminal (not console) or Bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># in RStudio Terminal (not R Console) or in Bash</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>sudo apt<span class="sc">-</span>get update</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>sudo apt<span class="sc">-</span>get install python3<span class="sc">-</span>venv python3<span class="sc">-</span>pip python3<span class="sc">-</span>dev</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="do">##########################################################</span></span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># in RStudio console</span></span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tensorflow"</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">library</span>(tensorflow)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">install_tensorflow</span>(<span class="at">extra_packages =</span> <span class="fu">c</span>(<span class="st">"tf_keras"</span>, <span class="st">"tensorflow"</span>, <span class="st">"tensorflow-probability"</span>,<span class="st">"pandas"</span>))</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#restart session</span></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tfprobability"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">library</span>(tensorflow)</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">library</span>(tfprobability)</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">tfd_binomial</span>(<span class="at">total_count =</span> <span class="dv">7</span>, <span class="at">probs =</span> <span class="fl">0.3</span>) <span class="co"># if this works then tensorflow us correctly installed</span></span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="do">##########################################################</span></span></code></pre></div>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">install_tensorflow</span>(<span class="at">extra_packages =</span> <span class="fu">c</span>(<span class="st">"tf_keras"</span>, <span class="st">"tensorflow"</span>, <span class="st">"tensorflow-probability"</span>,<span class="st">"pandas"</span>,<span class="st">"matplotlib"</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co"># note - matplotlib is not essential, and may be removed or added later via py_install()</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#restart session</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tfprobability"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu">library</span>(tensorflow)</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">library</span>(tfprobability)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">tfd_binomial</span>(<span class="at">total_count =</span> <span class="dv">7</span>, <span class="at">probs =</span> <span class="fl">0.3</span>) <span class="co"># if this works then tensorflow us correctly installed</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="do">##########################################################</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="installation-details-for-linux-1">Installation details for Linux<a class="anchor" aria-label="anchor" href="#installation-details-for-linux-1"></a>
+<h3 id="installation-details-for-windows">Installation details for Windows<a class="anchor" aria-label="anchor" href="#installation-details-for-windows"></a>
 </h3>
-<p>On Windows the key part is to have a suitable python installation and also that RStudio can locate this. Once this is in place then the same installation applied inside RStudio as for the above Linux case.</p>
+<p>On Windows the key part is to have a suitable Python installation and also that RStudio can locate this. Once this is in place then the installation process is as above for the Linux case.</p>
 </div>
 <div class="section level3">
-<h3 id="installation-of-separate-python-venv">Installation of separate Python venv<a class="anchor" aria-label="anchor" href="#installation-of-separate-python-venv"></a>
+<h3 id="advanced-installation-of-separate-python-venv">Advanced: Installation of separate Python venv<a class="anchor" aria-label="anchor" href="#advanced-installation-of-separate-python-venv"></a>
 </h3>
-<p>For the Graphical Neural Network (GNN) vignette this requires a separate Python venv to be setup because some tensorflow projects, such as TF-GNN, have very strict compatibility requirements which likely need install versions hardcoded. This has only been tested on Linux and MacOS.</p>
+<p>To run the live Graphical Neural Network (GNN) vignette requires a separate Python venv to be setup because some tensorflow spin-off projects, such as TF-GNN, have strict compatibility requirements. Library versions likely need hardcoded as pip will not choose suitable combinations. The instructions below setup an appropriate venv for running the GNN vignette (only tested on MacOS).</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># in bash</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv gnn</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="bu">source</span> gnn/bin/activate</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># now install via pip the specific library versions needed</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="ex">pip</span> install tensorflow==2.16.2 tf_keras==2.16.0 tensorflow-gnn</span></code></pre></div>
-<p>The second part is to instruct reticulate to use this Python venv rather than one of the existing virtualenv environments, e.g. that created when tfprobability is installed.</p>
+<p>The second part below in the R Console is to instruct <a href="https://rstudio.github.io/reticulate/" class="external-link">reticulate</a> to use this Python venv rather than one of the existing virtualenv environments, otherwise reticulate may use, e.g. the tensorflow venv created when doing the above install, which will likely not contain a compatible tensorflow version.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># in RStudio console</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/reticulate/" class="external-link">reticulate</a></span><span class="op">)</span></span>

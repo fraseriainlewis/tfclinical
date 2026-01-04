@@ -1,4 +1,4 @@
-# Two-arm trial with NUTS Sampling
+# Two-arm trial with No U-Turn sampling
 
 ## Quick start
 
@@ -27,31 +27,28 @@ here**.
 ## Overview
 
 This vignette shows some of the key building blocks in building a
-Bayesian hierarchical (HM) model in TFP. The model considered is for a
-basket trial design - a clinical trial where the same drug is used to
-treat different indications within the same master protocol. Using
-Bayesian HM approach some pooling/borrowing is possible between baskets
-to help improve the power of detecting true treatment differences.
+Bayesian hierarchical model (BHM) in TFP. The current model could be
+used for a two arm clinical trial with a binary endpoint. This model
+will be expanded to a basket trial design in a later vignette as the
+necessary revisions are fairly minor.
 
-Technically the model used in this vignette is not a basket trial
-because it only contains one basket, and so is a conventional two arm
-test v control trial. We are referring to it as a basket trial as the
-code is structured such that additional baskets can be easily added (see
-later vignettes). Only one basket is used to keep this as simple as
-possible to allow focus for now on the TPF building modelling blocks.
-
-This vignette shows some of the key building blocks in building a
-Bayesian model in TFP. It uses a mixture of R and Python Rmarkdown
-cells. R is used for data set creation and generation of figures, and
-Python for model building in TFP. This is a general theme of the
-vignettes; Python is used when direct interaction with the TFP API is
-needed, otherwise R is used as the assumed go-to language of choice for
-statisticians.
+The focus here is on some of the key building blocks in building a
+Bayesian model in TFP. A mixture of R and Python Rmarkdown cells are
+used, where R is generally used for data set creation and generation of
+figures, and Python for model building in TFP. This is a general theme
+of the vignettes; Python is used when direct interaction with the TFP
+API is needed, otherwise R is used as the assumed go-to language of
+choice for statisticians. Currently some plots use Python matplotlib but
+wll be replaced in due course with ggplot2.
 
 ### Example Model - Formulation
 
-The model implemented here is a into TPF code is the following
-non-centered parameterization for a logistic model.
+The model implemented here as an introduction to TFP is the following
+non-centered parameterization for a logistic model. A non-centered
+parameterization can be preferable when sampling from hierarchical
+Bayesian models as discussed in this
+[article](https://mc-stan.org/learn-stan/case-studies/divergences_and_bias.html)
+on the Stan website.
 
 \\ \begin{aligned} \mu_0 &\sim \text{Normal}(0, 2.5)\\ \sigma_0 &\sim
 \text{Half-Normal}(0, 2.5) \\ \mu_1 &\sim \text{Normal}(0, 2.5) \\
@@ -65,15 +62,14 @@ z_i\quad\quad\enspace\enspace\text{for}\enspace{i=1,\dots,N} \\ y_i
 ## Make data available to TFP models
 
 Assuming the data to be modelled, i.e. the source data from which
-parameters are to be estimates via model fitting, are loaded into R or
+parameters are to be estimated via model fitting, are loaded into R or
 generated in R then a first step is to make these data available to TFP.
 This functionality is readily provided by
-[reticulate](https://rstudio.github.io/reticulate/), with one watchout -
-the Python `pandas` library is required to deal with data.frames (see
-installation instructions - pandas can be included as part of Rstudio’s
-tfprobability install script).
+[reticulate](https://rstudio.github.io/reticulate/), with one
+watch-out - the Python `pandas` library is required to deal with
+data.frames or tibbles (see installation instructions).
 
-In TF and TPF models are written in Python but they use TF tensors as
+In TFP models are written in Python but they use TF tensors as
 arguments, rather than more familiar Python structures such as numpy
 arrays. This distinction is important as tensors are strongly typed and
 so care is needed, including when moving back and forth to R via
@@ -87,7 +83,7 @@ The R chunk below creates a simple dataset of three cols:
 - a binary treatment variable (0/1 = control/test treatment)
 - and a basket ID variable. (1)
 
-The basket ID is currently set fixed 1, denoting there is only one
+The basket ID is currently set fixed at 1, denoting there is only one
 basket in this trial, i.e. a classical two arm randomized trial design.
 Baskets will be added in other vignettes.
 
@@ -134,7 +130,7 @@ py$thedata<-r_to_py(thedata) # THE KEY LINE - makes data available to Python
 
 We first load in the necessary libraries for TFP and then convert the
 dataset passed from R into tensors. Note that as tensors are strongly
-typed we explicitly define the storage type.
+typed we explicitly define the storage type (dtype).
 
 ``` python
 import numpy as np
@@ -163,15 +159,11 @@ z_vec=tf.convert_to_tensor(thedata.iloc[:,2], dtype = tf.float32)
 
 We now fully define our model, i.e., the data likelihood and all the
 prior densities. We use a TFP function called
-JointDistributionSequentialAutoBatched. The are a number of alternative
-TFP functions for defining Bayesian models. This is one of the simplest
-but still capable of defining complex models. The model definition in
-JointDistributionSequentialAutoBatched **must follow a strict
-convention** which is explained in the comments.
-
-As above the model formulation here uses a non-centered approach to aim
-with MCMC estimation as discussed in the stan manual
-[here](https://mc-stan.org/learn-stan/case-studies/divergences_and_bias.html).
+JointDistributionSequentialAutoBatched. There are a number of
+alternative TFP functions for defining Bayesian models. This is one of
+the simplest but still capable of defining complex models. The model
+definition in JointDistributionSequentialAutoBatched **must follow a
+strict convention** which is explained in the comments.
 
 ### Define the likelihood
 
@@ -257,30 +249,36 @@ mylogp=log_prob_fn(mysample[0], mysample[1], mysample[2],mysample[3], mysample[4
 print(py$mylogp)
 ```
 
-![](precomputed/vg1_text2.png) \## Setup the MCMC Sampler TPF generally
-has a lower level inference to MCMC sampler routines than compared to
-Stan, and as such requires a few more manual steps. There are also a
-range of different ways to setup the samplers. The API is evolving so
-that higher level functions are steadily being introduced.
+![](precomputed/vg1_text2.png) \## Setup the MCMC sampler TFP generally
+has a lower level interface to MCMC sampler routines compared to Stan,
+and as such requires a few more manual steps. There are also a range of
+different ways to setup the samplers. The API is evolving so that higher
+level functions are steadily being introduced.
 
 ### NUTS and Adaptive-Step Size
 
-We use here a No-u-turn sampler, and add into this with dual step size
-adaptation for efficiency. To set this up we need to do the following:
+We use a No-u-turn sampler, and add into this dual step size adaptation
+for efficiency. To set this up we need to do the following:
 
-- Define the bijectors needed for each parameter in the model (as NUTS
-  requires unconstrained mappings)
+- Define the
+  [bijectors](https://www.tensorflow.org/probability/api_docs/python/tfp/bijectors/Bijector)
+  needed for each parameter in the model (as NUTS requires unconstrained
+  mappings)
 - Define tensors in a specific way such that we allow:
-  - each parameter to have it’s own step size adaptation
+  - each parameter to have its own step size adaptation
   - additionally allow this tuning to be done independently for each
     chain
 
-The following code sets this up. The precise tensor structure needed can
-require some trial and error. It has to be carefully specified as the
-structure tells TF how to arrange the calculations, both in terms of
-computational efficiency (parallelization wherever possible) and also at
-what level (parameter, chain, parameter\*chain) to perform step size
+The following code sets this up. **The precise tensor structure needed
+can require some trial and error**. It has to be carefully specified as
+the structure tells TFP how to arrange the calculations, both in terms
+of computational efficiency (parallelization wherever possible) and also
+at what level (parameter, chain, parameter\*chain) to perform step size
 adaptation.
+
+The initial step sizes chosen here (which are then adapted) are somewhat
+arbitrary and making good choices here is something that could be
+borrowed from how RStan does this.
 
 ``` python
 # bijectors which define the mapping from **unconstrained space to target space**
@@ -306,14 +304,13 @@ steps=[tf.constant([0.5]),                # mu0
 
 ## now we replicate the above "steps" array into a structure where this is
 ## repeated inside each chain
-n_chains=2 ## THIS SETS NUMBER OF CHAINS 
+n_chains=2 ## THIS SETS NUMBER OF CHAINS
 steps_chains = [tf.expand_dims(tf.repeat(steps[0],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
                  tf.expand_dims(tf.repeat(steps[1],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
                  tf.expand_dims(tf.repeat(steps[2],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
                  tf.expand_dims(tf.repeat(steps[3],repeats=n_chains,axis=-1),axis=-1), # starts with shape (1,)
                  tf.expand_dims(tf.tile(steps[4],[n_chains,1]),axis=1) # starts with shape (1,2) i.e. [[a, b]]
                  ]
-                 
 ```
 
 ``` r
@@ -322,11 +319,11 @@ print(py$steps_chains)
 
 ![](precomputed/vg1_text3.png)
 
-### NUTS definition
+### No U-Turn Sampler
 
-Now define the NUTS sampler, which needs several steps: - define the
-parameters to the NUTS sampler, - then wrap this inside the
-TransformedTransitionKernel which tells NUTS what transformations
+Now define the No U-Turn sampler, which needs several steps: - define
+the parameters in the No U-Turn sampler, - then wrap this inside the
+TransformedTransitionKernel which tell the NUTS what transformations
 (bijectors - as defined above) to use - then wrap the NUTS and
 TransformedTransitionKernel inside the adaptive step size routine
 
@@ -340,8 +337,8 @@ mysampler=tfp.mcmc.NoUTurnSampler(
                                      max_energy_diff=1000.0, # default do not change
                                      step_size=steps_chains
                                      )
-                          
-sampler = tfp.mcmc.TransformedTransitionKernel( # inside this the starting conditions must be on 
+
+sampler = tfp.mcmc.TransformedTransitionKernel( # inside this the starting conditions must be on
                                                 # original scale i.e. precisions must be >0
     mysampler,
     bijector=unconstraining_bijectors
@@ -351,7 +348,7 @@ sampler = tfp.mcmc.TransformedTransitionKernel( # inside this the starting condi
 adaptive_sampler = tfp.mcmc.DualAveragingStepSizeAdaptation(
     inner_kernel=sampler,
     num_adaptation_steps=int(0.8 * num_burnin_steps),
-    reduce_fn=tfp.math.reduce_logmeanexp, # default - this determines how to change the step 
+    reduce_fn=tfp.math.reduce_logmeanexp, # default - this determines how to change the step
                                           # adaptation across chains
     #reduce_fn=tfp.math.reduce_log_harmonic_mean_exp, # might be better if difficult chains
     target_accept_prob=tf.cast(0.95, tf.float32)) # this is a key parameter to get good mixing
@@ -360,10 +357,10 @@ adaptive_sampler = tfp.mcmc.DualAveragingStepSizeAdaptation(
 ## Define starting point for chains
 
 Explicit initial conditions are needed for each parameter in each chain.
-This is currently done very simply via hard coding. See Stan manual for
+This is currently done very simply via hard coding. See RStan manual for
 a fairly simple way to generate random conditions that often works well.
 The key point here is that the initial conditions must be again in a
-strict tensor structure.
+specific tensor structure.
 
 ``` python
 istate=[tf.constant([0.0]),
@@ -389,7 +386,7 @@ print(py$current_state)
 position to actually sample from our model, but first we will set up a
 tracer function which is called at every step. This can be used either
 for diagnostics, such as monitor step-size changes, or else to generate
-custom output, such as compute loglikelihood at each step. Such a
+custom output, such as compute log-likelihood at each step. Such a
 function can be computationally expensive and so it’s a trade-off as to
 whether to wait until the samples have been generated to compute
 additional functions of the parameters of interest.
@@ -410,7 +407,7 @@ def trace_fn(state, pkr):
 ```
 
 Now run the actual sampler. The number of steps and burn-in were defined
-above when we setup the NUTS sampler.
+above when we setup the No U-Turn sampler.
 
 ``` python
 # Speed up sampling by tracing with `tf.function`.
@@ -429,7 +426,7 @@ t0 = time.time()
 #samples, kernel_results = do_sampling()
 samples, traceout = do_sampling()
 #res = do_sampling()
-#[mu0, sigma0, mu1, sigma1,log_odds_control_and_ratio], results = do_sampling() 
+#[mu0, sigma0, mu1, sigma1,log_odds_control_and_ratio], results = do_sampling()
 t1 = time.time()
 print("Inference ran in {:.2f}s.".format(t1-t0))
 
@@ -445,6 +442,13 @@ print(py$themeans)
 ```
 
 ![](precomputed/vg1_text5.png)
+
+### Some Output plots
+
+We plot the log-likelihood over the MCMC steps (post-burn-in) using two
+chains, a different colour for each chain. Similarly for trace plots.
+These are just illustrative output examples, the number of burn-in and
+total chain steps here are too low for reliable estimation.
 
 ``` python
 import matplotlib.pyplot as plt
