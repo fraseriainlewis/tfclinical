@@ -22,8 +22,10 @@ navbar:
     intro:
       text: Get Started
       menu:
-        - text: "Two Arm RCT, BHM, NUTS Sampling"
+        - text: "Two Arm RCT, BHM, No U-Turn"
           href: articles/intro_model_build.html
+        - text: "Two Arm RCT|BHM|NUTS compared to RStan"
+          href: articles/intro_2armstan.html 
         - text: "Gaussian Regression (draft)"
           href: articles/intro_normal_tf_stan.html
         - text: "Negative Binomial Regression (draft)"

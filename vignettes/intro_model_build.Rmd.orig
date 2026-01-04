@@ -409,6 +409,12 @@ themeans=[np.mean(row) for row in samplesflat[0:4]]
 
 ```
 
+```{python stepsize_info,eval=FALSE,include=TRUE}
+# this shows how the step size changes during adaptation
+#traceout['step_size']
+#traceout['step_size'][0][999] #step size for mu0 at iteration 999+1
+```
+
 ```{r sampleout5,include=TRUE,echo=TRUE,eval=TRUE}
 names(py$themeans)<-c("mu0","sigma0","mu1","sigma1")
 print(py$themeans)

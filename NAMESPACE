@@ -8,4 +8,5 @@ import(reticulate,
     zeallot,
     purrr,
     ggplot2,
-    ragg)
+    ragg,
+    ggplot2)
