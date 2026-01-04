@@ -84,7 +84,7 @@
 <!--  tfclinical
 </h1> -->
 <!-- ::: {style="font-size: 17px;"} this hard codes font size, only way to do it -->
-<p>This package is a collection of multilingual (R and Python) vignettes showing how to use <a href="https://www.tensorflow.org/probability" class="external-link">Tensorflow Probability (TPF)</a> in <a href="https://posit.co/downloads/" class="external-link">RStudio</a>. The focus is modelling building and trial simulation for clinical research and drug development activities.</p>
+<p>This package is a collection of heavily documented Rmarkdown vignettes demonstrating how to use <a href="https://www.tensorflow.org/probability" class="external-link">Tensorflow Probability (TPF)</a> in <a href="https://posit.co/downloads/" class="external-link">RStudio</a> for Bayesian inference. <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a> features in many of these for comparison. The application focus is model building and trial simulation for clinical research and drug development activities.</p>
 <div class="section level2">
 <h2 id="why-tensorflow-probability-tfp">Why Tensorflow Probability (TFP)?<a class="anchor" aria-label="anchor" href="#why-tensorflow-probability-tfp"></a>
 </h2>
@@ -98,12 +98,12 @@
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
-<p>The vignettes range from demonstrating basic step-by-step mechanics of running MCMC in RStudio using TFP, for example how to use <strong>adaptive step sizes</strong> and <strong>multiple chains</strong>, through to complete examples of simulating Bayesian basket trials using TFP and comparing the results against rstan. Most vignettes include a comparison with <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a>.</p>
+<p><a href="https://www.tensorflow.org/probability" class="external-link">TFP</a> is less mature in terms of documentation compared <a href="https://mc-stan.org/rstan/" class="external-link">rstan</a>, in addition to having a Python API rather than R API. The vignettes included here are designed to help RStudio users get up to speed with TFP. Multi-lingual R markdown is used in each vignette to allow the strengths of each of R and Python to be used. There is an R wrapper library for TFP available (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">here</a>).</p>
 </div>
 <div class="section level2">
-<h2 id="installation-overview">Installation overview<a class="anchor" aria-label="anchor" href="#installation-overview"></a>
+<h2 id="running-the-vignettes">Running the Vignettes<a class="anchor" aria-label="anchor" href="#running-the-vignettes"></a>
 </h2>
-<p>Due to the computationally intensive nature of the code the vignettes show precomputed outputs, but the vignettes contain all the necessary code to repeat the computations. To run the computations the <a href="https://github.com/fraseriainlewis/tfclinical.git" class="external-link">tfclinical</a> library needs installed and it has one main dependency <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">tfprobability</a>. The tfprobability library is not directly used but installing this (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">installation instructions</a> ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras’’ option. <!-- ::: other pair from above--></p>
+<p>Due to the computationally intensive nature of the code the vignettes show only pre-computed outputs. Links to the full live vignettes are included at the <a href="https://fraseriainlewis.github.io/tfclinical/">tfclinical website</a>. To run the live vignettes <a href="https://github.com/fraseriainlewis/tfclinical.git" class="external-link">tfclinical</a> needs installed and it has one main dependency <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">tfprobability</a>. The tfprobability library is not directly used but installing this (see <a href="https://rstudio.github.io/tfprobability/index.html" class="external-link">installation instructions</a> ensures the necessary Python libraries are available. There is one exception, in that we also use the Python pandas library and so this should be included in the tfprobabilty install script (see below) in the ``extras’’ option. <!-- ::: other pair from above--></p>
 <div class="section level3">
 <h3 id="installation-details-for-linux">Installation details for Linux<a class="anchor" aria-label="anchor" href="#installation-details-for-linux"></a>
 </h3>

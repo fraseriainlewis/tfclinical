@@ -1,11 +1,12 @@
 ![](reference/figures/logo.png) tfclinical
 
-This package is a collection of multilingual (R and Python) vignettes
-showing how to use [Tensorflow Probability
+This package is a collection of heavily documented Rmarkdown vignettes
+demonstrating how to use [Tensorflow Probability
 (TPF)](https://www.tensorflow.org/probability) in
-[RStudio](https://posit.co/downloads/). The focus is modelling building
-and trial simulation for clinical research and drug development
-activities.
+[RStudio](https://posit.co/downloads/) for Bayesian inference.
+[rstan](https://mc-stan.org/rstan/) features in many of these for
+comparison. The application focus is model building and trial simulation
+for clinical research and drug development activities.
 
 ## Why Tensorflow Probability (TFP)?
 
@@ -20,20 +21,24 @@ activities.
 
 ## Features
 
-The vignettes range from demonstrating basic step-by-step mechanics of
-running MCMC in RStudio using TFP, for example how to use **adaptive
-step sizes** and **multiple chains**, through to complete examples of
-simulating Bayesian basket trials using TFP and comparing the results
-against rstan. Most vignettes include a comparison with
-[rstan](https://mc-stan.org/rstan/).
+[TFP](https://www.tensorflow.org/probability) is less mature in terms of
+documentation compared [rstan](https://mc-stan.org/rstan/), in addition
+to having a Python API rather than R API. The vignettes included here
+are designed to help RStudio users get up to speed with TFP.
+Multi-lingual R markdown is used in each vignette to allow the strengths
+of each of R and Python to be used. There is an R wrapper library for
+TFP available (see
+[here](https://rstudio.github.io/tfprobability/index.html)).
 
-## Installation overview
+## Running the Vignettes
 
 Due to the computationally intensive nature of the code the vignettes
-show precomputed outputs, but the vignettes contain all the necessary
-code to repeat the computations. To run the computations the
-[tfclinical](https://github.com/fraseriainlewis/tfclinical.git) library
-needs installed and it has one main dependency
+show only pre-computed outputs. Links to the full live vignettes are
+included at the [tfclinical
+website](https://fraseriainlewis.github.io/tfclinical/). To run the live
+vignettes
+[tfclinical](https://github.com/fraseriainlewis/tfclinical.git) needs
+installed and it has one main dependency
 [tfprobability](https://rstudio.github.io/tfprobability/index.html). The
 tfprobability library is not directly used but installing this (see
 [installation
