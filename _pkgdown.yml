@@ -11,7 +11,7 @@ template:
     #font-size-base: 1.0rem  # Controls main body text
     #h1-font-size: 3.0rem    # Controls specific headers
     # 3. Ensures line height remains proportional to the smaller text
-    code-font-size: 1.0rem # Controls code blocks
+    code-font-size: 0.8rem # Controls code blocks
 
 navbar:
   structure:
@@ -22,21 +22,21 @@ navbar:
     intro:
       text: Get Started
       menu:
-        - text: "Two Arm RCT, BHM, No U-Turn"
+        - text: "Ex.1.1 Two Arm RCT, BHM, No U-Turn"
           href: articles/intro_model_build.html
-        - text: "Two Arm RCT|BHM|NUTS compared to RStan"
+        - text: "Ex.1.1 v RStan"
           href: articles/intro_2armstan.html 
-        - text: "Gaussian Regression (draft)"
+        - text: "Ex.1.2 Gaussian Regression (draft)"
           href: articles/intro_normal_tf_stan.html
-        - text: "Negative Binomial Regression (draft)"
+        - text: "Ex.1.3 Negative Binomial Regression (draft)"
           href: articles/intro_neg_bin_tfp_stan.html
     advanced:
       text: Bayesian Case Studies 
       menu:
-        - text: "basket and stan (draft)"
+        - text: "Ex2.1. basket and stan (draft)"
           href: articles/adv_basket_stan.html
     other:
       text: Machine Learning 
       menu: 
-        - text: "Graphical Neural Network (draft)"
+        - text: "Ex3.1. Graphical Neural Network (draft)"
           href: articles/other_tf_gnn_example.html    
