@@ -60,6 +60,10 @@ y_data=tf.convert_to_tensor(data.iloc[:,0], dtype = tf.float32)
 X=tf.convert_to_tensor(data.iloc[:,1:],dtype=tf.float32)
 X=tf.concat([tf.ones([rows,1],dtype=tf.float32), X], axis=1)
 
+# observe lambda*t = a + b + c but want just lambda, i.e. Y=lambda*t so lambda = Y/t
+# log(lambda) = a + b + c  + log(exposure)
+# P(X=x) = lambda^x exp(-lambda)/x!  lambda = lambda2*t
+#
 
 beta_expos=tf.convert_to_tensor(1.0,dtype=tf.float32) # dummy
 
