@@ -10,8 +10,7 @@
 - show how to match rstanarm’s centering of predictors and auto-scaled
   priors
 
-This example uses illustrative data from the built-in R datasets
-library.
+This example uses simulated data.
 
 **Click
 [here](https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_normal_tf_stan.orig.Rmd)
