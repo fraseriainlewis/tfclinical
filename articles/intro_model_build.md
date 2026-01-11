@@ -1,9 +1,6 @@
 # Two-arm trial with No U-Turn sampling
 
-## Quick start
-
-This worked example is for a two arm clinical trial with binary endpoint
-and covers:
+## Key features covered in vignette
 
 - how to **pass data sets** from R to TFP (Python)
 - how to build a simple **hierarchical Bayesian model**
@@ -18,6 +15,9 @@ and covers:
 - how to generate samples from the posterior
   - including trace functions to compute **in-stream diagnostics and
     custom outputs**
+
+The use case for this worked example is a two arm clinical trial with
+binary endpoint.
 
 **Click
 [here](https://github.com/fraseriainlewis/tfclinical/blob/main/assets/fullcodevignettes/intro_model_build.orig.Rmd)
